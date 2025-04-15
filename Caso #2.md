@@ -313,6 +313,7 @@ Esto mejora la escalabilidad del sistema y protege la API ante picos de uso o ac
 This section outlines all critical decisions made in the design of the data access layer for the EchoPay system.
 
 1. **Structural – Infrastructure, Architecture, DevOps, DataOps**
+
 a) **Data Topology (OLTP, Master-Slave, Distributed, Replicated, Geo)**
 
 The system is designed as an OLTP application using a single-region primary with geo-replication for resilience.
@@ -324,6 +325,7 @@ The system is designed as an OLTP application using a single-region primary with
 - **Benefits: Reliable for OLTP workloads; ensures regional redundancy.**
 
 b) **Big Data Repositories (Hive, Snowflake, etc.)**
+
 Big data technologies are not required in the current scope of EchoPay, as the system focuses solely on real-time transactional data.
 
 - **Cloud service technology: None used.**
@@ -333,6 +335,7 @@ Big data technologies are not required in the current scope of EchoPay, as the s
 - **Benefits: Simplicity; reduced costs and complexity.**
 
 c) **Relational vs Document Database**
+
 A relational database was selected to support strong consistency and enforce structured financial data models.
 
 - **Cloud service technology: Azure SQL (Relational).**
@@ -342,6 +345,7 @@ A relational database was selected to support strong consistency and enforce str
 - **Benefits: ACID transactions; ideal for structured financial data.**
 
 d) **Tenancy, Access Permissions, Security**
+
 We prioritized multi-level access control and secure handling of sensitive data using standard tools from Azure and Auth0.
 
 - **Cloud service technology: Azure AD, Azure Key Vault, Auth0.**
@@ -351,6 +355,7 @@ We prioritized multi-level access control and secure handling of sensitive data 
 - **Benefits: Fine-grained control; secure access management.**
 
 e) **Recovery and Fault Tolerance**
+
 Azure SQL was selected for its robust recovery features, including automated backups and geo-redundancy to handle unexpected failures.
 
 - **Cloud service technology: Azure SQL (Auto backup + geo-replication).**
@@ -362,6 +367,7 @@ Azure SQL was selected for its robust recovery features, including automated bac
 2. **Object-Oriented Design – Programming Layer**
    
 a) **Transactions: Statements vs Stored Procedures**
+
 We chose to manage transactions programmatically through Sequelize rather than stored procedures, keeping logic flexible and easier to maintain.
 
 - **Cloud service technology: Azure SQL.**
@@ -371,6 +377,7 @@ We chose to manage transactions programmatically through Sequelize rather than s
 - **Benefits: Safer multi-step operations; rollback support.**
 
 b) **ORM Usage**
+
 We adopted Sequelize ORM to streamline our database interactions, leveraging its model-based structure to simplify queries and data validation.
 
 - **Cloud service technology: Sequelize ORM (Node.js).**
@@ -380,6 +387,7 @@ We adopted Sequelize ORM to streamline our database interactions, leveraging its
 - **Benefits: Simplifies database access; strong typing with TypeScript.**
 
 c) **Layers for Mapping, Concurrency, Object Relations**
+
 Our design separates object models and database interactions into distinct layers to improve maintainability and enable precise control over data transformation and validation.
 
 - **Cloud service technology: Node.js serverless backend.**
@@ -389,6 +397,7 @@ Our design separates object models and database interactions into distinct layer
 - **Benefits: Clean separation of concerns; testable logic.**
 
 d) **Connection Pooling**
+
 Connection pooling is configured in Sequelize to manage concurrency efficiently, especially in a serverless environment where resource limits can fluctuate.
 
 - **Cloud service technology: Sequelize + tedious driver.**
@@ -398,6 +407,7 @@ Connection pooling is configured in Sequelize to manage concurrency efficiently,
 - **Benefits: Prevents connection overload; optimizes performance.**
 
 e) **Caching**
+
 Although not yet implemented, caching is planned using Azure Redis to enhance performance in high-read operations like transaction history lookup.
 
 - **Cloud service technology: Azure Redis (planned).**
@@ -407,6 +417,7 @@ Although not yet implemented, caching is planned using Azure Redis to enhance pe
 - **Benefits: Faster reads; reduced DB load.**
 
 f) **Drivers: Native vs Interpreted**
+
 We opted for the native tedious driver to ensure compatibility and reliability when interfacing with Azure SQL Server.
 
 - **Cloud service technology: tedious MSSQL driver (native).**
@@ -416,6 +427,7 @@ We opted for the native tedious driver to ensure compatibility and reliability w
 - **Benefits: Stable, well-supported SQL Server connectivity.**
 
 g) **Data Design**
+
 The data model is designed following normalization principles to reduce redundancy and ensure consistency across the database.
 
 - **Cloud service technology: Azure SQL.**
