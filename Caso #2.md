@@ -88,24 +88,25 @@ After logging in, user profile information is displayed, demonstrating that auth
 
 Auth0 provides a hosted login page that can be customized directly from the Auth0 Dashboard. Here's how the customization process was carried out:
 
-1. **Accessing the Universal Login Settings**  
+1. **Accessing the Universal Login Settings**
+     
    From the Auth0 Dashboard:
    - Navigate to **Branding** > **Universal Login**.
    - Select the **Login** tab.
 
-2. **Selecting the Customization Mode**  
+3. **Selecting the Customization Mode**  
    Auth0 offers two modes:
    - **Classic**: Allows full customization using custom HTML, CSS, and JavaScript.
    - **New Universal Login Experience**: A modern, streamlined experience with limited visual customization but easier to configure.
 
    For this demo, the **New Universal Login Experience** was used to keep the configuration simple and consistent with current best practices.
 
-3. **Customizing the Login Page**  
+4. **Customizing the Login Page**  
    - The logo and primary color were changed under **Branding > Universal Login > Advanced Options > Customize**.
    - Additional UI elements like the title, background color, and button style can be adjusted using the branding options.
    - If using **Classic**, a custom HTML template can be provided to fully style the login experience.
 
-4. **Saving and Previewing**  
+5. **Saving and Previewing**  
    After making the desired changes, the updated login screen was previewed and saved. When logging in from the local app, the changes were reflected immediately in the hosted login page.
 
 ---
