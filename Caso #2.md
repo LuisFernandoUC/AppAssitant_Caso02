@@ -151,7 +151,7 @@ This verification code (`code`) is obtained through the following process:
 2. **Open the Auth0 authorization URL**:
    - In your browser, open the following URL, which is Auth0’s authorization endpoint. This URL includes all the necessary parameters for the initial authentication request:
 
-https://dev-5dp1b6y0xuwqglt1.us.auth0.com/authorize? response_type=code& client_id=vC5teCwmKnpZA7cnybb87RXCaRwCoLPL& redirect_uri=http://localhost:3000/auth/callback& scope=openid%20profile%20email& audience=https://payment-assistant-api.com
+<https://dev-5dp1b6y0xuwqglt1.us.auth0.com/authorize?response_type=code&client_id=vC5teCwmKnpZA7cnybb87RXCaRwCoLPL&redirect_uri=http://localhost:3000/auth/callback&scope=openid%20profile%20email&audience=https://payment-assistant-api.com>
 
 
 Here's a breakdown of the query parameters:
@@ -189,7 +189,7 @@ http://localhost:3000/auth/callback?code=9ax_OG55k8he0RWWtbTZ9epTawbkrQXRJULdvBE
   - **`grant_type=authorization_code`**: Indicates this is an Authorization Code flow request.
   - **`code=<verification code>`**: The verification code obtained from the redirection URL.
   - **`redirect_uri=http://localhost:3000/auth/callback`**: Must match the `redirect_uri` used during the initial authorization step.
-  - **`client_id` and `client_secret`**: Your app’s client credentials.
+  - **`client_id` and `client_secret`**: the app’s client credentials.
 
 8. **Successful Authentication Response**:
 - If everything is set up correctly and the request is valid, Auth0 will respond with a payload containing several important pieces of information:
@@ -200,7 +200,7 @@ http://localhost:3000/auth/callback?code=9ax_OG55k8he0RWWtbTZ9epTawbkrQXRJULdvBE
   - **`token_type`**: Typically set to `Bearer`, indicating that the token is a bearer token.
 
 9. **Outcome**:
-- After receiving the access token and id token, your client application can use them to authenticate API requests and gain access to protected resources. This confirms that the user has been successfully authenticated using the **Authorization Code Flow** with MFA.
+- After receiving the access token and id token, the client application can use them to authenticate API requests and gain access to protected resources. This confirms that the user has been successfully authenticated using the **Authorization Code Flow** with MFA.
 
 This step ensures that the authentication flow, including both password-based login and multi-factor authentication, is working properly. By using the verification code, the client can securely obtain tokens that are required for subsequent interactions with protected resources.
 
