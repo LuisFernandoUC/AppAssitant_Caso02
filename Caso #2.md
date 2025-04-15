@@ -1,4 +1,4 @@
-# System name - set your own name
+# EchoPay App
 Members
 - Luis Fernando Ureña Corrales - 2023064329
 - Luis Alejandro Masís Pérez - 
@@ -250,7 +250,7 @@ Para diseñar y construir los componentes visuales de EchoPay, vamos a seguir lo
 ## External Services
 The following diagram illustrates how UI components in the EchoPay frontend communicate directly with external services for user experience, automation, and interaction.
 
-![Texto alternativo](./assets/)
+![Texto alternativo](./assets/External_Services.png)
 
 - **Auth0** is used for user authentication. React components handle login/logout and store tokens.
 - **Azure Cognitive Services** allows the user to give payment commands using voice. The voice is transcribed to text in real-time.
