@@ -162,14 +162,14 @@ Para diseñar y construir los componentes visuales de EchoPay, vamos a seguir lo
 1. **REST, GraphQL, gRPC, Monolithic, or Monolithic-MVC?**  
 Usaremos una arquitectura Monolithic-MVC basada en REST utilizando las API Routes de Next.js. Esto nos permite tener todo el backend centralizado, pero bien organizado en capas (controladores, servicios, acceso a datos), lo cual facilita el mantenimiento sin complicar el despliegue ni el desarrollo colaborativo.
 
-2. **Serverless, Cloud, On-Premise, or Hybrid?**  
+2. **Serverless, Cloud, On-Premise, or Hybrid?**
 Elegimos una arquitectura Serverless en la nube, usando Vercel para desplegar el backend. 
 Esto elimina la necesidad de administrar infraestructura, escala automáticamente según el uso, y reduce costos en esta etapa temprana del proyecto. 
 
-3. **Service vs. Microservices?**  
+4. **Service vs. Microservices?**  
 EchoPay usa una arquitectura de tipo Service (monolito modular). Todo el backend vive en una sola aplicación Next.js, organizada internamente por módulos. Esta opción permite rapidez en el desarrollo y facilidad para colaborar en equipo. En caso de que el sistema crezca, esta estructura facilita una futura migración hacia microservicios si se vuelve necesario dividir responsabilidades por dominio. 
 
-4. **Event-Driven, Queues, Brokers, Producer/Consumer, Pub/Sub?**  
+5. **Event-Driven, Queues, Brokers, Producer/Consumer, Pub/Sub?**  
 EchoPay usará una arquitectura event-driven para manejar tareas que no necesitan respuesta inmediata, como: 
 
   - Confirmación de pagos 
