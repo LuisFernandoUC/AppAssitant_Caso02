@@ -296,53 +296,148 @@ La opción elegida es Azure API Management, ya que se alinea con el uso de Azure
 
 Esto mejora la escalabilidad del sistema y protege la API ante picos de uso o accesos no autorizados. 
 
+
 ##  Data Layer Design
 
-1. **Cloud service technology**
-For data storage, the system relies on Azure SQL Database (MSSQL Azure). This managed relational database service ensures high availability, scalability and strong security measures, making it well suited for handling financial transactions and sensitive user data.
+The design of EchoPay`s data layer follows cloud-native and object-oriented best practices to guarantee transactional reliability, performance and maintainability. Below are the major design decisions made, structured according to the required criteria.
 
-Why Azure SQL? 
-- It works coherently with our Node.js backend. 
-- Supports transactional integrity (ACID), which is key for payment operations. 
-- Offers automatic backups, replication and disaster recovery features. 
-- Easily scales to accommodate system growth without downtime.
+1. **Relational Database Engine (OLTP + Azure SQL)**
 
-2. **Object-oriented design patterns**
-The data layer makes use of proven object-oriented design patterns to promote clean architecture and easy maintenance: 
-- Repository Pattern: keeps data access logic separate from business logic. 
-- Data Access Object: handles the lower-level database operations, including raw queries and stored procedures. 
-- Factory: it helps instantiate repository objects dynamically depending on the context or module. 
-- Adapter: useful for integrating third-party services (like banks or municipal systems) by standardizing interfaces.
- 
-3. **Class layers for data access**
-Data flows through well-defined layers to ensure modularity and testability. Here`s how the data access structure is organized:
+- **Cloud service technology**:  
+  Microsoft Azure SQL Database (single-region with geo-replication).
 
-Examples of repositories: 
-- UserRepository 
-- PaymentRepository 
-- BankAccountRepository 
+- **Object-oriented design patterns**:  
+  Repository Pattern, Data Access Object (DAO).
 
-4. **Configuration policies/rules**
-To ensure data integrity and system security, several configuration policies are in place: 
+- **Class layers for data access**:  
+  `Repository` → `DAO` (Sequelize) → Azure SQL.
 
-- Access Control: only authenticated backend services (via Auth0 and Azure API Management) can access the database. 
-- Encryption	 
+- **Configuration policies/rules**:  
+  - Automatic daily backups (30-day retention).  
+  - Transparent Data Encryption (TDE) at rest.  
+  - SSL enforced in transit.  
+  - Geo-redundant storage (GRS).  
 
-SSL is enforced for all data in transit. 
+- **Expected benefits**:  
+  - Ensures ACID compliance and data integrity.  
+  - Low-latency and high-availability by leveraging Azure PaaS.  
+  - Enables fast failover and point-in-time recovery.
 
-Transparent Data Encryption (TDE) protects data at rest.  
+2. **ORM-Based Data Mapping (Sequelize ORM)**
+- **Cloud service technology**:  
+  Deployed via Vercel Serverless Functions (Node.js runtime). Data access runs within backend API routes.
 
-- Secrets Management: connection strings and sensitive credentials are stored securely in Azure Key Vault. 
-- Backup Strategy: automatic daily backups with a 30-day retention window. 
-- Indexing: indexes are applied to commonly queried fields such as userId, paymentDate and status to optimize performance. 
+- **Object-oriented design patterns**:  
+  Active Record pattern (via Sequelize), layered within a Repository abstraction.
 
-5. **Expected benefits**
-This design brings several advantages: 
-- Secure by design protects financial and personal data using best practices. 
-- Scalable: can grow with user demand thanks to Azure`s flexible architecture. 
-- Easy to maintain: the separation of responsibilities makes the system easier to test, debug and extend. 
-- Robust: handles failures gracefully through automated recovey mechanisms. 
-- Future-proof: well-structured to support future integration with new data sources or external systems. 
+- **Class layers for data access**:  
+  `Service Layer` → `Repository Layer` → `Sequelize Models`.
+
+- **Configuration policies/rules**:  
+  - Sequelize migration scripts manage schema changes.  
+  - Entity relationships defined via model associations (`hasMany`, `belongsTo`).  
+  - Environment variables define database credentials (secured via Azure Key Vault).
+
+- **Expected benefits**:  
+  - Abstracts raw SQL, improving developer productivity.  
+  - Enables easy refactoring and maintenance.  
+  - Ensures synchronization between business logic and data schema.
+
+3. **Transactional Operations via ORM**
+- **Cloud service technology**:  
+  Serverless backend powered by Next.js API routes on Vercel.
+
+- **Object-oriented design patterns**:  
+  Unit of Work pattern using Sequelize’s transaction API.
+
+- **Class layers for data access**:  
+  `Service Layer` → `Transaction Manager` (Sequelize) → `Repositories`.
+
+- **Configuration policies/rules**:  
+  - All critical updates (e.g., payment processing) are executed inside transactions.  
+  - Rollback is enforced automatically on exceptions.
+
+- **Expected benefits**:  
+  - Prevents partial updates and data corruption.  
+  - Guarantees data consistency during multi-step operations.  
+  - Easier debugging of failed operations.
+
+4. **Secure Access and Permissions**
+- **Cloud service technology**:  
+  Azure SQL access secured with Azure AD, Auth0 for user authentication, Azure Key Vault for secrets.
+
+- **Object-oriented design patterns**:  
+  Role-based access control (RBAC) and Strategy Pattern for permission enforcement in services.
+
+- **Class layers for data access**:  
+  `Auth Layer` → `Policy Validator` → `Service/Repository`.
+
+- **Configuration policies/rules**:  
+  - Auth0 roles and permissions mapped to backend policies.  
+  - Backend services validate identity via JWT.  
+  - Database credentials never hardcoded; loaded securely at runtime.
+
+- **Expected benefits**:  
+  - Secures sensitive operations (e.g., payment creation, account linking).  
+  - Enables fine-grained access control by role or tenant.  
+  - Protects against privilege escalation and data leakage.
+
+5. **Connection Management and Pooling**
+- **Cloud service technology**:  
+  Connection pooling managed by Sequelize using underlying `tedious` driver for MSSQL.
+
+- **Object-oriented design patterns**:  
+  Singleton for database connection manager.
+
+- **Class layers for data access**:  
+  `DBConnectionManager` → `Sequelize` → `Models`.
+
+- **Configuration policies/rules**:  
+  - Max pool size set based on concurrency needs.  
+  - Idle timeout and connection retries are tuned for serverless environments.
+
+- **Expected benefits**:  
+  - Reduces overhead from repeated DB connections.  
+  - Optimizes API performance under load.  
+  - Prevents connection exhaustion.
+
+6. **Fault Tolerance and Recovery**
+- **Cloud service technology**:  
+  Azure SQL built-in high availability + automated backups.
+
+- **Object-oriented design patterns**:  
+  Not applicable directly; fault handling done via infra and API logic.
+
+- **Class layers for data access**:  
+  `API Error Handler` → `Service Retry Logic` (where applicable).
+
+- **Configuration policies/rules**:  
+  - Automatic retry on transient errors (e.g., timeout, rate limit).  
+  - Alerts configured for connection failures.
+
+- **Expected benefits**:  
+  - Minimizes downtime in case of failures.  
+  - Data can be restored to any point within 30 days.  
+  - Transparent recovery process for end users.
+
+7. **Future-Proof Caching Strategy**
+- **Cloud service technology**:  
+  Planned integration with Azure Redis Cache.
+
+- **Object-oriented design patterns**:  
+  Cache-aside pattern.
+
+- **Class layers for data access**:  
+  `Cache Layer` → `Repository Layer`.
+
+- **Configuration policies/rules**:  
+  - Frequently-read data (e.g., payment history) will be cached.  
+  - TTL and cache invalidation policies will be enforced.
+
+- **Expected benefits**:  
+  - Improves read-heavy performance.  
+  - Reduces DB load during peak traffic.  
+  - Enables low-latency response times for users. 
 
 ##  Architecture Design 
 ##  Architecture Compliance Matrix 
