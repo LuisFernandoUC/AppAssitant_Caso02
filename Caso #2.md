@@ -6,15 +6,18 @@ Members
 - Danielo Wu Zhong - 2023150448
 
 ## Description:
-
+EchoPay is a web-based and voice-based personal payment assistant that helps users manage, schedule, and execute recurring utility payments. It uses artificial intelligence to process natural language commands and integrates with banking APIs to ensure transaction security. The platform is designed for ease of use, security, and scalability. 
 
 ## Stack:
-
-
+**Frontend**: 
+  -React 
+  -Tailwind CSS 
+  -TypeScript 
+**Backend**: 
+  -Next.js  
+**Database**: 
+  -MSSQL Azure 
 ## Frontend design specifications
-
-
----
 
 ### Authentication platform: Auth0
 
