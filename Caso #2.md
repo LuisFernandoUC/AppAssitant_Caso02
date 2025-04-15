@@ -159,8 +159,8 @@ Para diseñar y construir los componentes visuales de EchoPay, vamos a seguir lo
 
 ##  Backend Architecture 
 
-1. **R EST, GraphQL, gRPC, Monolithic, or Monolithic-MVC?** 
-Usaremos una arquitectura Monolithic-MVC basada en REST utilizando las API Routes de Next.js. Esto nos permite tener todo el backend centralizado, pero bien organizado en capas (controladores, servicios, acceso a datos), lo cual facilita el mantenimiento sin complicar el despliegue ni el desarrollo colaborativo. 
+1. **REST, GraphQL, gRPC, Monolithic, or Monolithic-MVC?**  
+Usaremos una arquitectura Monolithic-MVC basada en REST utilizando las API Routes de Next.js. Esto nos permite tener todo el backend centralizado, pero bien organizado en capas (controladores, servicios, acceso a datos), lo cual facilita el mantenimiento sin complicar el despliegue ni el desarrollo colaborativo.
 
 2. **Serverless, Cloud, On-Premise, or Hybrid?**
 Elegimos una arquitectura Serverless en la nube, usando Vercel para desplegar el backend. 
