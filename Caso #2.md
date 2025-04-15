@@ -126,16 +126,16 @@ Technology used to implement this architecture:
 
 This architecture allows for better modularity, scalability, and maintainability, and it facilitates future integration with other clients such as mobile applications. 
 
-#Mobile Development: 
+# Mobile Development: 
 Currently, the system is focused solely on web application development. No mobile version is planned at this stage. If mobile development is considered in the future, a hybrid approach (shared code base) using React Native will be chosen, allowing code reuse across platforms. 
 
-#Web App Rendering: 
+# Web App Rendering: 
 EchoPay will primarily use Client-Side Rendering (CSR) to provide a fast and interactive user experience. 
 However, since the system uses Next.js, Server-Side Rendering (SSR) can also be applied selectively for specific pages where SEO or initial load performance is a concern. 
 
-##Visual Components 
+## Visual Components 
 
-#Patterns & Principles 
+# Patterns & Principles 
 
 Para diseñar y construir los componentes visuales de EchoPay, vamos a seguir los siguientes patrones y principios, adaptados a nuestro stack (React + Tailwind + TypeScript): 
 
@@ -147,7 +147,7 @@ Para diseñar y construir los componentes visuales de EchoPay, vamos a seguir lo
   -MVVM (React): Aunque React no sigue MVVM de forma estricta, lo usaremos como guía separando la vista (JSX), la lógica de presentación (hooks) y el acceso a datos o servicios. 
   -State Management Pattern (web): Usaremos estado local (useState, useContext, useReducer) para componentes simples. Si en el futuro el manejo de datos se vuelve más complejo, vamos a integrar Redux Toolkit por su buena compatibilidad con TypeScript y Next.js. 
 
-#Toolkits and Standards 
+# Toolkits and Standards 
 
   -Tailwind CSS: Será la base para aplicar estilos de forma rápida, limpia y con buen control responsivo. 
   -Storybook: Nos permitirá trabajar componentes visuales de forma aislada y documentarlos para el equipo. 
