@@ -269,11 +269,11 @@ These services are invoked through client-side logic and are chosen based on the
 
 ## Project Structure   
 
-![Texto alternativo](./assets/Project_Structure.jpg)
+![Texto alternativo](./assets/Project_Structure.png)
 
 ## Final FE architecture diagram    
 
-![Texto alternativo](./assets/Final_FE_Architecture_Diagram.png)
+![Texto alternativo](./assets/Final_FE_Architecture_Diagram.jpg)
 
 ##  Backend Architecture 
 
