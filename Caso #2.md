@@ -113,3 +113,44 @@ Auth0 provides a hosted login page that can be customized directly from the Auth
 This process allows developers to provide a consistent and branded login experience for users without having to build a login UI from scratch.
 
 ---
+
+## Client Architecture:
+
+EchoPay will follow an N-layer architecture, as it utilizes APIs to separate concerns between the presentation layer (frontend), the business logic (backend), and data access (database). 
+
+Technology used to implement this architecture: 
+
+  -Frontend: React + TypeScript + Tailwind CSS 
+  -Backend: Next.js API Routes 
+  -Database: Azure MSSQL 
+
+This architecture allows for better modularity, scalability, and maintainability, and it facilitates future integration with other clients such as mobile applications. 
+
+#Mobile Development: 
+Currently, the system is focused solely on web application development. No mobile version is planned at this stage. If mobile development is considered in the future, a hybrid approach (shared code base) using React Native will be chosen, allowing code reuse across platforms. 
+
+#Web App Rendering: 
+EchoPay will primarily use Client-Side Rendering (CSR) to provide a fast and interactive user experience. 
+However, since the system uses Next.js, Server-Side Rendering (SSR) can also be applied selectively for specific pages where SEO or initial load performance is a concern. 
+
+##Visual Components 
+
+#Patterns & Principles 
+
+Para diseñar y construir los componentes visuales de EchoPay, vamos a seguir los siguientes patrones y principios, adaptados a nuestro stack (React + Tailwind + TypeScript): 
+
+  -SOLID (must): Cada componente tendrá una sola responsabilidad clara, evitando que tenga múltiples funciones mezcladas. 
+  -DRY (must): Reutilizaremos componentes y lógica donde sea posible para evitar duplicación de código. 
+  -Separation of Concerns (must): Separaremos la lógica del negocio, la visual y los estilos. Por ejemplo, usando hooks para lógica y componentes puros para la presentación. 
+  -Responsive Design (must): Toda la interfaz se diseñará para adaptarse bien a distintos tamaños de pantalla, aprovechando las utilidades de Tailwind CSS. 
+  -Atomic Design (all): Organizaremos nuestros componentes en niveles: átomos (botones, inputs), moléculas (formularios simples), organismos (secciones completas como un formulario de pago), templates y páginas. 
+  -MVVM (React): Aunque React no sigue MVVM de forma estricta, lo usaremos como guía separando la vista (JSX), la lógica de presentación (hooks) y el acceso a datos o servicios. 
+  -State Management Pattern (web): Usaremos estado local (useState, useContext, useReducer) para componentes simples. Si en el futuro el manejo de datos se vuelve más complejo, vamos a integrar Redux Toolkit por su buena compatibilidad con TypeScript y Next.js. 
+
+#Toolkits and Standards 
+
+  -Tailwind CSS: Será la base para aplicar estilos de forma rápida, limpia y con buen control responsivo. 
+  -Storybook: Nos permitirá trabajar componentes visuales de forma aislada y documentarlos para el equipo. 
+  -Chakra UI (opcional): Podría usarse para agilizar diseño de ciertos componentes si se necesita velocidad en el desarrollo. 
+  -Material Design: Lo tomaremos como referencia visual para consistencia, jerarquía y accesibilidad. 
+  -Vercel: Será la plataforma de despliegue del frontend, aprovechando su integración con Next.js para CI/CD y previsualizaciones automáticas. 
