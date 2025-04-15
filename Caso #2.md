@@ -292,3 +292,54 @@ La opción elegida es Azure API Management, ya que se alinea con el uso de Azure
   - Manejo de errores y redirección 
 
 Esto mejora la escalabilidad del sistema y protege la API ante picos de uso o accesos no autorizados. 
+
+##  Data Layer Design
+
+1. **Cloud service technology**
+For data storage, the system relies on Azure SQL Database (MSSQL Azure). This managed relational database service ensures high availability, scalability and strong security measures, making it well suited for handling financial transactions and sensitive user data.
+
+Why Azure SQL? 
+- It works coherently with our Node.js backend. 
+- Supports transactional integrity (ACID), which is key for payment operations. 
+- Offers automatic backups, replication and disaster recovery features. 
+- Easily scales to accommodate system growth without downtime.
+
+2. **Object-oriented design patterns**
+The data layer makes use of proven object-oriented design patterns to promote clean architecture and easy maintenance: 
+- Repository Pattern: keeps data access logic separate from business logic. 
+- Data Access Object: handles the lower-level database operations, including raw queries and stored procedures. 
+- Factory: it helps instantiate repository objects dynamically depending on the context or module. 
+- Adapter: useful for integrating third-party services (like banks or municipal systems) by standardizing interfaces.
+ 
+3. **Class layers for data access**
+Data flows through well-defined layers to ensure modularity and testability. Here`s how the data access structure is organized:
+
+Examples of repositories: 
+- UserRepository 
+- PaymentRepository 
+- BankAccountRepository 
+
+4. **Configuration policies/rules**
+To ensure data integrity and system security, several configuration policies are in place: 
+
+- Access Control: only authenticated backend services (via Auth0 and Azure API Management) can access the database. 
+- Encryption	 
+
+SSL is enforced for all data in transit. 
+
+Transparent Data Encryption (TDE) protects data at rest.  
+
+- Secrets Management: connection strings and sensitive credentials are stored securely in Azure Key Vault. 
+- Backup Strategy: automatic daily backups with a 30-day retention window. 
+- Indexing: indexes are applied to commonly queried fields such as userId, paymentDate and status to optimize performance. 
+
+5. **Expected benefits**
+This design brings several advantages: 
+- Secure by design protects financial and personal data using best practices. 
+- Scalable: can grow with user demand thanks to Azure`s flexible architecture. 
+- Easy to maintain: the separation of responsibilities makes the system easier to test, debug and extend. 
+- Robust: handles failures gracefully through automated recovey mechanisms. 
+- Future-proof: well-structured to support future integration with new data sources or external systems. 
+
+##  Architecture Design 
+##  Architecture Compliance Matrix 
