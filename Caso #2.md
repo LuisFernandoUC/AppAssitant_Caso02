@@ -14,6 +14,8 @@ Members
 ## Frontend design specifications
 
 
+---
+
 ### Authentication platform: Auth0
 
 For the authentication platform, we have chosen Auth0 due to its robust features and ease of integration with web applications. Auth0 meets all the required criteria being:
@@ -23,6 +25,8 @@ For the authentication platform, we have chosen Auth0 due to its robust features
 - Fully compatible with React and Next.js, enabling seamless integration into the frontend of the system.
 - Auth0 offers API access to authenticate users programmatically, allowing us to validate and manage users without relying on the server-side session management.
 - It supports Multi-Factor Authentication (MFA), ensuring a higher level of security. Additionally, Auth0 provides a sandbox environment that allows testing authentication flows, facilitating the development process.
+
+---
 
 ### Demo Code:
 
@@ -107,3 +111,5 @@ Auth0 provides a hosted login page that can be customized directly from the Auth
 ---
 
 This process allows developers to provide a consistent and branded login experience for users without having to build a login UI from scratch.
+
+---
