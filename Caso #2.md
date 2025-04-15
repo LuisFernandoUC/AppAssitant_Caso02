@@ -1,7 +1,7 @@
 # EchoPay App
 Members
 - Luis Fernando Ureña Corrales - 2023064329
-- Luis Alejandro Masís Pérez - 
+- Luis Alejandro Masís Pérez - 2017239616
 - Nicole Tatiana Parra Valverde - 2023223291
 - Danielo Wu Zhong - 2023150448
 
