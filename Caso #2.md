@@ -247,6 +247,18 @@ Para diseñar y construir los componentes visuales de EchoPay, vamos a seguir lo
   - Material Design: Lo tomaremos como referencia visual para consistencia, jerarquía y accesibilidad. 
   - Vercel: Será la plataforma de despliegue del frontend, aprovechando su integración con Next.js para CI/CD y previsualizaciones automáticas.
 
+## External Services
+The following diagram illustrates how UI components in the EchoPay frontend communicate directly with external services for user experience, automation, and interaction.
+
+![Texto alternativo](./assets/)
+
+- **Auth0** is used for user authentication. React components handle login/logout and store tokens.
+- **Azure Cognitive Services** allows the user to give payment commands using voice. The voice is transcribed to text in real-time.
+- **Azure Text-to-Speech** reads back payment confirmations, enhancing accessibility.
+- **Azure Computer Vision** enables users to upload images of receipts or invoices. The system extracts relevant information like amount, date, and service.
+- **Payments External APIs** are accessed from the frontend to automate service-related operations with external providers (e.g., electricity, water).
+
+These services are invoked through client-side logic and are chosen based on their ability to integrate securely with frontend technologies like React.
 
 ##  Backend Architecture 
 
