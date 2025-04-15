@@ -2,7 +2,7 @@
 Members
 - Luis Fernando Ureña Corrales - 2023064329
 - Luis Alejandro Masís Pérez - 
-- Nicole Tatiana Parra Valverde -
+- Nicole Tatiana Parra Valverde - 2023223291
 - Danielo Wu Zhong -
 
 ## Description:
@@ -120,9 +120,9 @@ EchoPay will follow an N-layer architecture, as it utilizes APIs to separate con
 
 Technology used to implement this architecture: 
 
-  -Frontend: React + TypeScript + Tailwind CSS 
-  -Backend: Next.js API Routes 
-  -Database: Azure MSSQL 
+  - Frontend: React + TypeScript + Tailwind CSS 
+  - Backend: Next.js API Routes 
+  - Database: Azure MSSQL 
 
 This architecture allows for better modularity, scalability, and maintainability, and it facilitates future integration with other clients such as mobile applications. 
 
@@ -153,4 +153,36 @@ Para diseñar y construir los componentes visuales de EchoPay, vamos a seguir lo
   - Storybook: Nos permitirá trabajar componentes visuales de forma aislada y documentarlos para el equipo. 
   - Chakra UI (opcional): Podría usarse para agilizar diseño de ciertos componentes si se necesita velocidad en el desarrollo. 
   - Material Design: Lo tomaremos como referencia visual para consistencia, jerarquía y accesibilidad. 
-  - Vercel: Será la plataforma de despliegue del frontend, aprovechando su integración con Next.js para CI/CD y previsualizaciones automáticas. 
+  - Vercel: Será la plataforma de despliegue del frontend, aprovechando su integración con Next.js para CI/CD y previsualizaciones automáticas.
+
+
+##  Backend Architecture 
+
+1. **R EST, GraphQL, gRPC, Monolithic, or Monolithic-MVC? ** 
+Usaremos una arquitectura Monolithic-MVC basada en REST utilizando las API Routes de Next.js. Esto nos permite tener todo el backend centralizado, pero bien organizado en capas (controladores, servicios, acceso a datos), lo cual facilita el mantenimiento sin complicar el despliegue ni el desarrollo colaborativo. 
+
+2. ** Serverless, Cloud, On-Premise, or Hybrid?  **
+Elegimos una arquitectura Serverless en la nube, usando Vercel para desplegar el backend. 
+Esto elimina la necesidad de administrar infraestructura, escala automáticamente según el uso, y reduce costos en esta etapa temprana del proyecto. 
+
+3. ** Service vs. Microservices? **
+EchoPay usa una arquitectura de tipo Service (monolito modular). Todo el backend vive en una sola aplicación Next.js, organizada internamente por módulos. Esta opción permite rapidez en el desarrollo y facilidad para colaborar en equipo. En caso de que el sistema crezca, esta estructura facilita una futura migración hacia microservicios si se vuelve necesario dividir responsabilidades por dominio. 
+
+4. ** Event-Driven, Queues, Brokers, Producer/Consumer, Pub/Sub?  **
+EchoPay usará una arquitectura event-driven para manejar tareas que no necesitan respuesta inmediata, como: 
+
+  - Confirmación de pagos 
+  - Envío de notificaciones
+  - Registro de actividad del usuario 
+
+Se utilizará Azure Service Bus como broker de mensajes. Los servicios del backend actuarán como productores que envían eventos, y habrá consumidores que procesan esos eventos (por ejemplo, enviar un correo o guardar un log). 
+Se aplicarán los patrones Producer/Consumer y Pub/Sub, según el tipo de evento. 
+
+5. ** API Gateway (Security & Scalability)? ? **
+Se usará un API Gateway, principalmente por razones de seguridad y control. La opción elegida es Azure API Management, ya que se alinea con el uso de Azure MSSQL y podría gestionar: 
+  - Autenticación centralizada con Auth0 
+  - Rate limiting 
+  - Monitoreo de tráfico 
+  - Manejo de errores y redirección 
+
+Esto mejora la escalabilidad del sistema y protege la API ante picos de uso o accesos no autorizados. 
