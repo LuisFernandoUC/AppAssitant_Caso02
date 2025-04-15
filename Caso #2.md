@@ -250,6 +250,10 @@ Para diseñar y construir los componentes visuales de EchoPay, vamos a seguir lo
   - Material Design: Lo tomaremos como referencia visual para consistencia, jerarquía y accesibilidad. 
   - Vercel: Será la plataforma de despliegue del frontend, aprovechando su integración con Next.js para CI/CD y previsualizaciones automáticas.
 
+## Object design patterns  
+
+![Texto alternativo](./assets/Object_Design_Patterns.png)
+
 ## External Services
 The following diagram illustrates how UI components in the EchoPay frontend communicate directly with external services for user experience, automation, and interaction.
 
@@ -262,6 +266,14 @@ The following diagram illustrates how UI components in the EchoPay frontend comm
 - **Payments External APIs** are accessed from the frontend to automate service-related operations with external providers (e.g., electricity, water).
 
 These services are invoked through client-side logic and are chosen based on their ability to integrate securely with frontend technologies like React.
+
+## Project Structure   
+
+![Texto alternativo](./assets/Project_Structure.jpg)
+
+## Final FE architecture diagram    
+
+![Texto alternativo](./assets/Final_FE_Architecture_Diagram.png)
 
 ##  Backend Architecture 
 
