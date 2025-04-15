@@ -55,11 +55,11 @@ These settings allow proper redirection during the login and logout flows in dev
 
 The `.env.local` file was created in the root of the project with the necessary variables from Auth0:
 
-- AUTH0_SECRET=<your-secret-generated-with-openssl>
-- AUTH0_BASE_URL=http://localhost:3000
-- AUTH0_ISSUER_BASE_URL=https://<your-auth0-domain>.auth0.com
-- AUTH0_CLIENT_ID=<your-client-id>
-- AUTH0_CLIENT_SECRET=<your-client-secret>
+- AUTH0_SECRET= secret-generated-with-openssl
+- AUTH0_BASE_URL= http://localhost:3000
+- AUTH0_ISSUER_BASE_URL= https://auth0-domain.auth0.com
+- AUTH0_CLIENT_ID= client-id
+- AUTH0_CLIENT_SECRET= client-secret
 
 #### 4. Installing the Demo Code and Dependencies
 
