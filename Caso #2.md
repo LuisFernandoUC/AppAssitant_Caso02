@@ -254,9 +254,6 @@ Technology used to implement this architecture:
 
 This architecture allows for better modularity, scalability, and maintainability, and it facilitates future integration with other clients such as mobile applications. 
 
-#### Mobile Development: 
-Currently, the system is focused solely on web application development. No mobile version is planned at this stage. If mobile development is considered in the future, a hybrid approach (shared code base) using React Native will be chosen, allowing code reuse across platforms. 
-
 #### Web App Rendering: 
 EchoPay will primarily use Client-Side Rendering (CSR) to provide a fast and interactive user experience. 
 However, since the system uses Next.js, Server-Side Rendering (SSR) can also be applied selectively for specific pages where SEO or initial load performance is a concern. 
@@ -265,23 +262,23 @@ However, since the system uses Next.js, Server-Side Rendering (SSR) can also be 
 
 #### Patterns & Principles 
 
-Para diseñar y construir los componentes visuales de EchoPay, vamos a seguir los siguientes patrones y principios, adaptados a nuestro stack (React + Tailwind + TypeScript): 
+To design and build the visual components of EchoPay, we will follow the following patterns and principles, adapted to our stack (React + Tailwind + TypeScript): 
 
-  - SOLID (must): Cada componente tendrá una sola responsabilidad clara, evitando que tenga múltiples funciones mezcladas. 
-  - DRY (must): Reutilizaremos componentes y lógica donde sea posible para evitar duplicación de código. 
-  - Separation of Concerns (must): Separaremos la lógica del negocio, la visual y los estilos. Por ejemplo, usando hooks para lógica y componentes puros para la presentación. 
-  - Responsive Design (must): Toda la interfaz se diseñará para adaptarse bien a distintos tamaños de pantalla, aprovechando las utilidades de Tailwind CSS. 
-  - Atomic Design (all): Organizaremos nuestros componentes en niveles: átomos (botones, inputs), moléculas (formularios simples), organismos (secciones completas como un formulario de pago), templates y páginas. 
-  - MVVM (React): Aunque React no sigue MVVM de forma estricta, lo usaremos como guía separando la vista (JSX), la lógica de presentación (hooks) y el acceso a datos o servicios. 
-  - State Management Pattern (web): Usaremos estado local (useState, useContext, useReducer) para componentes simples. Si en el futuro el manejo de datos se vuelve más complejo, vamos a integrar Redux Toolkit por su buena compatibilidad con TypeScript y Next.js. 
+  - SOLID (must): Each component will have a single, clear responsibility, avoiding the mixing of multiple functions. 
+  - DRY (must): We will reuse components and logic wherever possible to avoid code duplication. 
+  - Separation of Concerns (must): We will separate business logic, visual structure, and styling. For example, using hooks for logic and pure components for presentation. 
+  - Responsive Design (must): The entire interface will be designed to adapt well to different screen sizes, leveraging Tailwind CSS utilities. 
+  - Atomic Design (all): We will organize our components in levels: atoms (buttons, inputs), molecules (simple forms), organisms (complete sections like a payment form), templates, and pages. 
+  - MVVM (React): While React doesn’t strictly follow MVVM, we will use it as a guide by separating the view (JSX), presentation logic (hooks), and data/service access. 
+  - State Management Pattern (web): We will use local state (useState, useContext, useReducer) for simple components. If data handling becomes more complex in the future, we will integrate Redux Toolkit due to its good compatibility with TypeScript and Next.js. 
 
 #### Toolkits and Standards 
 
-  - Tailwind CSS: Será la base para aplicar estilos de forma rápida, limpia y con buen control responsivo. 
-  - Storybook: Nos permitirá trabajar componentes visuales de forma aislada y documentarlos para el equipo. 
-  - Chakra UI (opcional): Podría usarse para agilizar diseño de ciertos componentes si se necesita velocidad en el desarrollo. 
-  - Material Design: Lo tomaremos como referencia visual para consistencia, jerarquía y accesibilidad. 
-  - Vercel: Será la plataforma de despliegue del frontend, aprovechando su integración con Next.js para CI/CD y previsualizaciones automáticas.
+  - Tailwind CSS: It will be the foundation for applying styles quickly, cleanly, and with strong responsive control. 
+  - Storybook: It will allow us to work on visual components in isolation and document them for the team. 
+  - Chakra UI (optional): It will be used to speed up the design of certain components when development velocity is a priority. 
+  - Material Design: We will use it as a visual reference for consistency, hierarchy, and accessibility. 
+  - Vercel: It will be the deployment platform for the frontend, taking advantage of its integration with Next.js for CI/CD and automatic previews.
 
 ## Object design patterns  
 
