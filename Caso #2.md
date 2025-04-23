@@ -289,11 +289,18 @@ The following diagram illustrates how UI components in the EchoPay frontend comm
 
 ![Texto alternativo](./assets/External_Services.png)
 
-- **Auth0** is used for user authentication. React components handle login/logout and store tokens.
-- **Azure Cognitive Services** allows the user to give payment commands using voice. The voice is transcribed to text in real-time.
-- **Azure Text-to-Speech** reads back payment confirmations, enhancing accessibility.
-- **Azure Computer Vision** enables users to upload images of receipts or invoices. The system extracts relevant information like amount, date, and service.
-- **Payments External APIs** are accessed from the frontend to automate service-related operations with external providers (e.g., electricity, water).
+**Description of Services:**
+
+- **Auth0** 
+Used for user authentication. React components handle login/logout and store tokens.
+- **Azure Cognitive Services**
+Allows the user to give payment commands using voice. The voice is transcribed to text in real-time.
+- **Azure Text-to-Speech**
+Reads back payment confirmations, enhancing accessibility.
+- **Azure Computer Vision**
+Enables users to upload images of receipts or invoices. The system extracts relevant information like amount, date, and service.
+- **Payments External APIs**
+Accessed from the frontend to automate service-related operations with external providers (e.g., electricity, water).
 
 These services are invoked through client-side logic and are chosen based on their ability to integrate securely with frontend technologies like React.
 
