@@ -83,7 +83,7 @@ To launch the app in development mode, the following command was executed:
 This started the development server on http://localhost:3000.
 
 #### 6. Testing the Authentication Flow
-The demo application includes login and logout buttons. When clicking the Login button, the app redirects the user to the Auth0-hosted login screen. Upon successful authentication, the user is redirected back to the application.
+The demo application includes login and logout buttons. When clicking the Login button, the app redirects the user to the Auth0-hosted login screen. Upon successful authentication (by introducing the correct email and password or using a google account), the sistem asks the user for it's OTP(as a MFA authentication), then the user is redirected back to the application.
 
 After logging in, user profile information is displayed, demonstrating that authentication was successful and session management is working correctly.
 
