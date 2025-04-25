@@ -1,10 +1,10 @@
-# EchoPay - Serverless Backend con TypeScript
+# EchoPay - Serverless Backend with TypeScript
 
-Este proyecto implementa un backend para la plataforma de pagos **EchoPay** utilizando AWS Lambda, Serverless Framework y TypeScript. El sistema está organizado en capas, permite una arquitectura limpia, escalable y lista para microservicios. Incluye middlewares encadenables, repositorios desacoplados con MSSQL, y logger agnóstico.
+This project implements a backend for the **EchoPay** payment platform using AWS Lambda, the Serverless Framework, and TypeScript. The system is layered and follows a clean, scalable architecture ready for microservices. It includes chainable middleware, decoupled repositories with MSSQL, and an agnostic logger.
 
 ---
 
-## 📁 Estructura del Proyecto
+## Project Structure
 
 ```
 serverless/
@@ -23,39 +23,39 @@ serverless/
 
 ---
 
-## ✅ Requisitos
+## Requirements
 
-- Node.js 18 o superior
-- AWS CLI configurado
+- Node.js 18 or higher
+- AWS CLI configured
 - Serverless Framework (`npm install -g serverless`)
 
 ---
 
-## 🚀 Instrucciones para configurar
+## Setup Instructions
 
-1. **Clonar el repositorio**:
+1. **Clone the repository**:
 
 ```bash
 git clone https://github.com/LuisFernandoUC/AppAssitant_Caso02.git
 cd AppAssitant_Caso02/serverless
 ```
 
-2. **Instalar dependencias**:
+2. **Install dependencies**:
 
 ```bash
 npm install
 ```
 
-3. **Crear archivo `.env`**:
+3. **Create the `env` file**:
 
 ```dotenv
-DB_USER=usuario
-DB_PASS=contraseña
-DB_SERVER=servidor
-DB_NAME=nombre_base
+DB_USER=username
+DB_PASS=password
+DB_SERVER=server
+DB_NAME=database_name
 ```
 
-4. **Compilar el proyecto**:
+4. **Compile the project**:
 
 ```bash
 npm run build
@@ -63,15 +63,15 @@ npm run build
 
 ---
 
-## 🧪 Ejecutar localmente
+## Run Locally
 
-Instalar plugin offline:
+Install the offline plugin:
 
 ```bash
 npm install serverless-offline --save-dev
 ```
 
-Editar `serverless.yml`:
+Edit the `serverless.yml` file and add the following plugins:
 
 ```yaml
 plugins:
@@ -79,7 +79,7 @@ plugins:
   - serverless-offline
 ```
 
-Iniciar localmente:
+Start locally:
 
 ```bash
 serverless offline
@@ -87,7 +87,7 @@ serverless offline
 
 ---
 
-## ☁️ Despliegue en AWS
+## Deploy to AWS
 
 ```bash
 serverless deploy
