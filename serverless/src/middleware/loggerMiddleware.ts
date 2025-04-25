@@ -1,9 +1,9 @@
 // src/middleware/LoggerMiddleware.ts
 import { Middleware } from "../middleware/abstractMiddleware";
-import { ConsoleLogger } from "../logger/consoleLogger";
+import { CloudLogger } from "../logger/cloudLogger";
 
 export class LoggerMiddleware implements Middleware {
-    private logger = new ConsoleLogger(); // Aquí se crea una instancia de ConsoleLogger para manejar los logs.
+    private logger = new CloudLogger(); // Aquí se crea una instancia de ConsoleLogger para manejar los logs.
 
     async execute(ctx: any, next: () => Promise<void>): Promise<void> {
         const method = ctx.event.httpMethod; // Obtiene el método HTTP (GET, POST, etc.) de la solicitud.

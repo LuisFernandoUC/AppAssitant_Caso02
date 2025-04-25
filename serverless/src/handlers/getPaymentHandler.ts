@@ -5,25 +5,29 @@ import { AuthMiddleware } from "../middleware/AuthMiddleware";
 import { LoggerMiddleware } from "../middleware/LoggerMiddleware";
 import { PaymentService } from "../services/paymentService";
 import { PaymentMSSQLRepository } from "../repository/paymentMSSQLRepository";
+import { CloudLogger } from "../logger/cloudLogger"; // Asegúrate de que esta ruta sea correcta
 
 // Lista de middlewares a usar
 const middleware = [
-    new AuthMiddleware(), // Middleware para autenticación
-    new LoggerMiddleware() // Middleware para registro de logs
+    new AuthMiddleware(), // obligatorio
+    ...(process.env.USE_LOGGER === "true" ? [new LoggerMiddleware()] : []) // opcional
 ];
 
 class GetPaymentHandler extends AbstractHandler {
+    private logger: CloudLogger;
+
     constructor() {
         super(middleware); // Se pasa la lista de middlewares al constructor de la clase base
+        this.logger = new CloudLogger();
     }
 
     protected async execute(ctx: any): Promise<any> {
         // Se inicializa el repositorio y el servicio de pagos
-        const repository = new PaymentMSSQLRepository(ctx.logger);
-        const service = new PaymentService(repository, ctx.logger);
+        const repository = new PaymentMSSQLRepository(this.logger);
+        const service = new PaymentService(repository, this.logger);
 
         // Se registra un mensaje en los logs
-        ctx.logger?.info("Handler: obteniendo pagos...");
+        this.logger.info("Handler: obteniendo pagos...");
         // Se obtienen los pagos a través del servicio
         const result = await service.listPayments();
         return {

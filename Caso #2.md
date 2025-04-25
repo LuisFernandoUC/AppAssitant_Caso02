@@ -1,22 +1,27 @@
 # EchoPay App
+
 Members
+
 - Luis Fernando Ureña Corrales - 2023064329
 - Luis Alejandro Masís Pérez - 2017239616
 - Nicole Tatiana Parra Valverde - 2023223291
 - Danielo Wu Zhong - 2023150448
 
 ## Description:
-EchoPay is a web-based and voice-based personal payment assistant that helps users manage, schedule, and execute recurring utility payments. It uses artificial intelligence to process natural language commands and integrates with banking APIs to ensure transaction security. The platform is designed for ease of use, security, and scalability. 
+
+EchoPay is a web-based and voice-based personal payment assistant that helps users manage, schedule, and execute recurring utility payments. It uses artificial intelligence to process natural language commands and integrates with banking APIs to ensure transaction security. The platform is designed for ease of use, security, and scalability.
 
 ## Stack:
-**Frontend**: 
-  -React 
-  -Tailwind CSS 
-  -TypeScript 
-**Backend**: 
-  -Next.js  
-**Database**: 
-  -MSSQL Azure 
+
+**Frontend**:
+-React
+-Tailwind CSS
+-TypeScript
+**Backend**:
+-Next.js  
+**Database**:
+-MSSQL Azure
+
 ## Frontend design specifications
 
 ### Authentication platform: Auth0
@@ -39,7 +44,7 @@ To test how Auth0 works and how the login screen can be customized, a demo code 
 
 An application was created in the [Auth0 Dashboard](https://manage.auth0.com/) with the following configuration:
 
-- **Application Type:** Regular Web Application  
+- **Application Type:** Regular Web Application
 - **Name:** DemoCode
 - **Technology Stack:** Next.js
 
@@ -83,6 +88,7 @@ To launch the app in development mode, the following command was executed:
 This started the development server on http://localhost:3000.
 
 #### 6. Testing the Authentication Flow
+
 The demo application includes login and logout buttons. When clicking the Login button, the app redirects the user to the Auth0-hosted login screen. Upon successful authentication (by introducing the correct email and password or using a google account), the sistem asks the user for it's OTP(as a MFA authentication), then the user is redirected back to the application.
 
 After logging in, user profile information is displayed, demonstrating that authentication was successful and session management is working correctly.
@@ -92,24 +98,27 @@ After logging in, user profile information is displayed, demonstrating that auth
 Auth0 provides a hosted login page that can be customized directly from the Auth0 Dashboard. Here's how the customization process was carried out:
 
 1. **Accessing the Universal Login Settings**
-     
+
    From the Auth0 Dashboard:
+
    - Navigate to **Branding** > **Universal Login**.
    - Select the **Login** tab.
 
-3. **Selecting the Customization Mode**  
+2. **Selecting the Customization Mode**  
    Auth0 offers two modes:
+
    - **Classic**: Allows full customization using custom HTML, CSS, and JavaScript.
    - **New Universal Login Experience**: A modern, streamlined experience with limited visual customization but easier to configure.
 
    For this demo, the **New Universal Login Experience** was used to keep the configuration simple and consistent with current best practices.
 
-4. **Customizing the Login Page**  
+3. **Customizing the Login Page**
+
    - The logo and primary color were changed under **Branding > Universal Login > Advanced Options > Customize**.
    - Additional UI elements like the title, background color, and button style can be adjusted using the branding options.
    - If using **Classic**, a custom HTML template can be provided to fully style the login experience.
 
-5. **Saving and Previewing**  
+4. **Saving and Previewing**  
    After making the desired changes, the updated login screen was previewed and saved. When logging in from the local app, the changes were reflected immediately in the hosted login page.
 
 ---
@@ -128,6 +137,7 @@ The error field in the response contains the value mfa_required, and the descrip
 In addition to the error, the response includes an MFA token. This token is not an access token and does not grant access to protected resources. Instead, it is a short-lived token that represents a pending MFA challenge. It must be included in a subsequent request, where the user will provide the second authentication factor (such as a one-time password from an authenticator app or another supported method).
 
 Here's a breakdown of the query parameters:
+
 - **`response_type=code`**: This specifies that the client expects an authorization code in response.
 - **`client_id`**: The unique identifier for the application in Auth0.
 - **`redirect_uri`**: The URI where the user will be redirected after completing the login. This URI should match the one set up in the Auth0 application configuration.
@@ -148,7 +158,7 @@ The second request continues the MFA-enforced login flow by completing the MFA c
 
 This request uses the custom grant type `http://auth0.com/oauth/grant-type/mfa-otp`, which is specific to Auth0's MFA flow. It verifies that the user has successfully passed the second authentication factor and, if successful, returns an `access_token` and `id_token`.
 
-This is a critical step in the flow because it transitions the user from *pending MFA* to *fully authenticated*, granting them access to the application or API.
+This is a critical step in the flow because it transitions the user from _pending MFA_ to _fully authenticated_, granting them access to the application or API.
 
 **Request Body Parameters:**
 
@@ -162,10 +172,10 @@ This is a critical step in the flow because it transitions the user from *pendin
 
 json:
 {
-  "access_token": "eyJz93a...k4laUWw",
-  "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "expires_in": 86400,
-  "token_type": "Bearer"
+"access_token": "eyJz93a...k4laUWw",
+"id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+"expires_in": 86400,
+"token_type": "Bearer"
 }
 
 **Key Points:**
@@ -189,6 +199,7 @@ The request is made to Auth0's `/oauth/token` endpoint with the following fields
 This verification code (`code`) is obtained through the following process:
 
 1. **Start the development server**:
+
    - You need to start the server with the command `npm run dev`. This will run the application locally and allow you to proceed with the authentication flow.
 
 2. **Open the Auth0 authorization URL**:
@@ -197,30 +208,34 @@ This verification code (`code`) is obtained through the following process:
 <https://dev-5dp1b6y0xuwqglt1.us.auth0.com/authorize?response_type=code&client_id=vC5teCwmKnpZA7cnybb87RXCaRwCoLPL&redirect_uri=http://localhost:3000/auth/callback&scope=openid%20profile%20email&audience=https://payment-assistant-api.com>
 
 3. **Login using the test user**:
+
 - Once the page loads, log in using the **test credentials** provided for this example:
   - **Email**: `danielowu1012@gmail.com`
   - **Password**: `b-uvWDqu3XJBuUY`
-But, using the gmail login also works due to the need of the OTP.
+    But, using the gmail login also works due to the need of the OTP.
 
 The user will be prompted to enter these details. After successful login, MFA will be triggered.
 
 4. **Multi-Factor Authentication (MFA)**:
+
 - After entering the username and password, the user will be prompted for the **One-Time Password (OTP)** as part of the MFA challenge. This is a security measure to verify the identity of the user.
 - The OTP is typically sent via an authentication app (like Google Authenticator or Auth0’s Guardian app), or via email/SMS depending on the MFA setup.
 
 5. **Redirection after successful MFA**:
+
 - Once the MFA challenge is completed successfully, Auth0 will redirect the user to the callback URL configured in the initial authorization request.
 - The URL will look similar to:
 
 http://localhost:3000/auth/callback?code=9ax_OG55k8he0RWWtbTZ9epTawbkrQXRJULdvBE-lIKsf
 
-
 - The key part here is the **`code`** parameter, which is the **authorization code** needed to complete the authentication process.
 
 6. **Copy the `code` value**:
+
 - From the URL, copy the value of the `code` parameter and paste it into the body of the token request, replacing `<verification code>`. This code is valid for a short period and is used to request tokens from the `/oauth/token` endpoint.
 
 7. **Making the Token Request**:
+
 - With the authorization code, you can now make the token request to Auth0’s `/oauth/token` endpoint. The request body will contain the following:
   - **`grant_type=authorization_code`**: Indicates this is an Authorization Code flow request.
   - **`code=<verification code>`**: The verification code obtained from the redirection URL.
@@ -228,6 +243,7 @@ http://localhost:3000/auth/callback?code=9ax_OG55k8he0RWWtbTZ9epTawbkrQXRJULdvBE
   - **`client_id` and `client_secret`**: the app’s client credentials.
 
 8. **Successful Authentication Response**:
+
 - If everything is set up correctly and the request is valid, Auth0 will respond with a payload containing several important pieces of information:
   - **`access_token`**: This token is used to authorize API requests. It must be included in the authorization header of subsequent API calls.
   - **`id_token`**: This token contains information about the authenticated user, such as their name, email, and other profile details.
@@ -236,6 +252,7 @@ http://localhost:3000/auth/callback?code=9ax_OG55k8he0RWWtbTZ9epTawbkrQXRJULdvBE
   - **`token_type`**: Typically set to `Bearer`, indicating that the token is a bearer token.
 
 9. **Outcome**:
+
 - After receiving the access token and id token, the client application can use them to authenticate API requests and gain access to protected resources. This confirms that the user has been successfully authenticated using the **Authorization Code Flow** with MFA.
 
 This step ensures that the authentication flow, including both password-based login and multi-factor authentication, is working properly. By using the verification code, the client can securely obtain tokens that are required for subsequent interactions with protected resources.
@@ -244,128 +261,136 @@ This step ensures that the authentication flow, including both password-based lo
 
 ## Client Architecture:
 
-EchoPay will follow an N-layer architecture, as it utilizes APIs to separate concerns between the presentation layer (frontend), the business logic (backend), and data access (database). 
+EchoPay will follow an N-layer architecture, as it utilizes APIs to separate concerns between the presentation layer (frontend), the business logic (backend), and data access (database).
 
-Technology used to implement this architecture: 
+Technology used to implement this architecture:
 
-  - Frontend: React + TypeScript + Tailwind CSS 
-  - Backend: Next.js API Routes 
-  - Database: Azure MSSQL 
+- Frontend: React + TypeScript + Tailwind CSS
+- Backend: Next.js API Routes
+- Database: Azure MSSQL
 
-This architecture allows for better modularity, scalability, and maintainability, and it facilitates future integration with other clients such as mobile applications. 
+This architecture allows for better modularity, scalability, and maintainability, and it facilitates future integration with other clients such as mobile applications.
 
-#### Web App Rendering: 
-EchoPay will primarily use Client-Side Rendering (CSR) to provide a fast and interactive user experience. 
-However, since the system uses Next.js, Server-Side Rendering (SSR) can also be applied selectively for specific pages where SEO or initial load performance is a concern. 
+#### Web App Rendering:
 
-## Visual Components 
+EchoPay will primarily use Client-Side Rendering (CSR) to provide a fast and interactive user experience.
+However, since the system uses Next.js, Server-Side Rendering (SSR) can also be applied selectively for specific pages where SEO or initial load performance is a concern.
 
-#### Patterns & Principles 
+## Visual Components
 
-To design and build the visual components of EchoPay, we will follow the following patterns and principles, adapted to our stack (React + Tailwind + TypeScript): 
+#### Patterns & Principles
 
-  - SOLID (must): Each component will have a single, clear responsibility, avoiding the mixing of multiple functions. 
-  - DRY (must): We will reuse components and logic wherever possible to avoid code duplication. 
-  - Separation of Concerns (must): We will separate business logic, visual structure, and styling. For example, using hooks for logic and pure components for presentation. 
-  - Responsive Design (must): The entire interface will be designed to adapt well to different screen sizes, leveraging Tailwind CSS utilities. 
-  - Atomic Design (all): We will organize our components in levels: atoms (buttons, inputs), molecules (simple forms), organisms (complete sections like a payment form), templates, and pages. 
-  - MVVM (React): While React doesn’t strictly follow MVVM, we will use it as a guide by separating the view (JSX), presentation logic (hooks), and data/service access. 
-  - State Management Pattern (web): We will use local state (useState, useContext, useReducer) for simple components. If data handling becomes more complex in the future, we will integrate Redux Toolkit due to its good compatibility with TypeScript and Next.js. 
+To design and build the visual components of EchoPay, we will follow the following patterns and principles, adapted to our stack (React + Tailwind + TypeScript):
 
-#### Toolkits and Standards 
+- SOLID (must): Each component will have a single, clear responsibility, avoiding the mixing of multiple functions.
+- DRY (must): We will reuse components and logic wherever possible to avoid code duplication.
+- Separation of Concerns (must): We will separate business logic, visual structure, and styling. For example, using hooks for logic and pure components for presentation.
+- Responsive Design (must): The entire interface will be designed to adapt well to different screen sizes, leveraging Tailwind CSS utilities.
+- Atomic Design (all): We will organize our components in levels: atoms (buttons, inputs), molecules (simple forms), organisms (complete sections like a payment form), templates, and pages.
+- MVVM (React): While React doesn’t strictly follow MVVM, we will use it as a guide by separating the view (JSX), presentation logic (hooks), and data/service access.
+- State Management Pattern (web): We will use local state (useState, useContext, useReducer) for simple components. If data handling becomes more complex in the future, we will integrate Redux Toolkit due to its good compatibility with TypeScript and Next.js.
 
-  - Tailwind CSS: It will be the foundation for applying styles quickly, cleanly, and with strong responsive control. 
-  - Storybook: It will allow us to work on visual components in isolation and document them for the team. 
-  - Chakra UI (optional): It will be used to speed up the design of certain components when development velocity is a priority. 
-  - Material Design: We will use it as a visual reference for consistency, hierarchy, and accessibility. 
-  - Vercel: It will be the deployment platform for the frontend, taking advantage of its integration with Next.js for CI/CD and automatic previews.
+#### Toolkits and Standards
 
-## Object design patterns  
+- Tailwind CSS: It will be the foundation for applying styles quickly, cleanly, and with strong responsive control.
+- Storybook: It will allow us to work on visual components in isolation and document them for the team.
+- Chakra UI (optional): It will be used to speed up the design of certain components when development velocity is a priority.
+- Material Design: We will use it as a visual reference for consistency, hierarchy, and accessibility.
+- Vercel: It will be the deployment platform for the frontend, taking advantage of its integration with Next.js for CI/CD and automatic previews.
+
+## Object design patterns
 
 ![Texto alternativo](./assets/Object_Design_Patterns.png)
 
 ## External Services
+
 The following diagram illustrates how UI components in the EchoPay frontend communicate directly with external services for user experience, automation, and interaction.
 
 ![Texto alternativo](./assets/External_Services.png)
 
 **Description of Services:**
 
-- **Auth0** 
-Used for user authentication. React components handle login/logout and store tokens.
+- **Auth0**
+  Used for user authentication. React components handle login/logout and store tokens.
 - **Azure Cognitive Services**
-Allows the user to give payment commands using voice. The voice is transcribed to text in real-time.
+  Allows the user to give payment commands using voice. The voice is transcribed to text in real-time.
 - **Azure Text-to-Speech**
-Reads back payment confirmations, enhancing accessibility.
+  Reads back payment confirmations, enhancing accessibility.
 - **Azure Computer Vision**
-Enables users to upload images of receipts or invoices. The system extracts relevant information like amount, date, and service.
+  Enables users to upload images of receipts or invoices. The system extracts relevant information like amount, date, and service.
 - **Payments External APIs**
-Accessed from the frontend to automate service-related operations with external providers (e.g., electricity, water).
+  Accessed from the frontend to automate service-related operations with external providers (e.g., electricity, water).
 
 These services are invoked through client-side logic and are chosen based on their ability to integrate securely with frontend technologies like React.
 
-## Project Structure   
+## Project Structure
 
 ![Texto alternativo](./assets/Project_Structure.png)
 
-## Final FE architecture diagram    
+## Final FE architecture diagram
 
 ![Texto alternativo](./assets/Final_FE_Architecture_Diagram.jpg)
 
-## **Backend Design Specifications**  
+## **Backend Design Specifications**
 
 ### Proof of Concepts
 
 **POC Step 1 – Handler Responsibilities (SOLID & Cohesion)**
+
 - **Challenge faced:**  
-The original template used two handlers with undefined responsibilities and example logic, including inline middleware execution. This needed to be changed to comply with the Single Responsibility Principle.
+  The original template used two handlers with undefined responsibilities and example logic, including inline middleware execution. This needed to be changed to comply with the Single Responsibility Principle.
 - **Solution chosen:**  
-An AbstractHandler class was created to encapsulate middleware execution and error handling. Concrete handlers, such as getPaymentHandler and createPaymentHandler, inherit from this class and are limited to executing their specific business logic. The Template Method pattern was applied to standardize the request execution flow.
+  An AbstractHandler class was created to encapsulate middleware execution and error handling. Concrete handlers, such as getPaymentHandler and createPaymentHandler, inherit from this class and are limited to executing their specific business logic. The Template Method pattern was applied to standardize the request execution flow.
 - **Advantages:**  
-This implementation centralizes error control and middleware handling, promotes reusability, and facilitates maintenance by allowing new handlers to be added cleanly and consistently.
+  This implementation centralizes error control and middleware handling, promotes reusability, and facilitates maintenance by allowing new handlers to be added cleanly and consistently.
 
 **POC Step 2 – README.md Improvements**
+
 - **Challenge faced:**  
-The initial README was very limited, only offering basic setup instructions. It didn’t explain the project structure or document common development issues.
+  The initial README was very limited, only offering basic setup instructions. It didn’t explain the project structure or document common development issues.
 - **Solution chosen:**  
-The README.md file was completely rewritten to include a clear guide on the project’s purpose, how to configure it locally, how to deploy it to AWS, and how to test it using Postman. Issues encountered during environment configuration and deployment (e.g., Git submodule conflicts, Serverless plugin problems) were documented along with their solutions.
+  The README.md file was completely rewritten to include a clear guide on the project’s purpose, how to configure it locally, how to deploy it to AWS, and how to test it using Postman. Issues encountered during environment configuration and deployment (e.g., Git submodule conflicts, Serverless plugin problems) were documented along with their solutions.
 - **Advantages:**  
-The updated README serves as a reference for new developers, improves overall system understanding, and reduces setup time by documenting real-world solutions.
+  The updated README serves as a reference for new developers, improves overall system understanding, and reduces setup time by documenting real-world solutions.
 
 **POC Step 3 – Logger Improvements (Design Pattern)**
+
 - **Challenge faced:**  
-Using console.log directly didn’t allow for structured or reusable logging, nor was it suitable for cloud environments.
+  Using console.log directly didn’t allow for structured or reusable logging, nor was it suitable for cloud environments.
 - **Solution chosen:**  
-An ILogger interface was defined, and a ConsoleLogger implementation was created to support log, info, and error levels with timestamp formatting. This logger is injected into services and repositories, applying the Strategy Pattern. It can easily be swapped out for another implementation, such as CloudWatch.
+  An ILogger interface was defined, and a ConsoleLogger implementation was created to support log, info, and error levels with timestamp formatting. This logger is injected into services and repositories, applying the Strategy Pattern. It can easily be swapped out for another implementation, such as CloudWatch.
 - **Advantages:**  
-The logger is now decoupled, extensible, and aligned with good development practices. It improves system traceability and facilitates monitoring in real deployments.
+  The logger is now decoupled, extensible, and aligned with good development practices. It improves system traceability and facilitates monitoring in real deployments.
 
 **POC Step 4 – Middleware Management (Optional & Mandatory)**
+
 - **Challenge faced:**  
-The original template did not allow for flexible middleware definition. Everything was hardcoded inside each handler.
+  The original template did not allow for flexible middleware definition. Everything was hardcoded inside each handler.
 - **Solution chosen:**  
-A middleware interface was designed, and a dynamic execution chain was implemented within the AbstractHandler class. Some middleware, such as AuthMiddleware, is mandatory, while others, like LoggerMiddleware, are conditionally activated using an environment variable (USE_LOGGER). A safeguard was implemented to prevent multiple calls to next().
+  A middleware interface was designed, and a dynamic execution chain was implemented within the AbstractHandler class. Some middleware, such as AuthMiddleware, is mandatory, while others, like LoggerMiddleware, are conditionally activated using an environment variable (USE_LOGGER). A safeguard was implemented to prevent multiple calls to next().
 - **Advantages:**  
-This pattern allows chaining multiple middleware cleanly, enabling configuration by environment (development vs. production) and ensuring security and modularity.
+  This pattern allows chaining multiple middleware cleanly, enabling configuration by environment (development vs. production) and ensuring security and modularity.
 
 **POC Step 5 – Repository Layer Improvements**
 
 - **Challenge faced:**
-In the original template, handlers accessed the database directly, resulting in tight coupling and making testing and data source replacement difficult.
+  In the original template, handlers accessed the database directly, resulting in tight coupling and making testing and data source replacement difficult.
 - **Solution chosen:**
-An IPaymentRepository interface was created to define the operations required by repositories. A concrete implementation, PaymentMSSQLRepository, was developed to connect to an Azure SQL database using stored procedures. Additionally, a PaymentService layer was added to handle business rules and normalize data before it is passed to the repository.
+  An IPaymentRepository interface was created to define the operations required by repositories. A concrete implementation, PaymentMSSQLRepository, was developed to connect to an Azure SQL database using stored procedures. Additionally, a PaymentService layer was added to handle business rules and normalize data before it is passed to the repository.
 - **Advantages:**
-This abstraction enables testing without relying on a real database, facilitates changing the data source, and improves the backend structure overall.
+  This abstraction enables testing without relying on a real database, facilitates changing the data source, and improves the backend structure overall.
 
 **POC Step 6 – Deployment & Testing**
+
 - **Challenge faced:**  
-The template did not include functional deployment examples or integration tests.
+  The template did not include functional deployment examples or integration tests.
 - **Solution chosen:**  
-The project was configured to use the Serverless Framework to deploy getPayments and createPayment Lambda functions on AWS. These functions were connected to an Azure SQL database via stored procedures. Postman was used to validate the complete flow from API call to database interaction.
+  The project was configured to use the Serverless Framework to deploy getPayments and createPayment Lambda functions on AWS. These functions were connected to an Azure SQL database via stored procedures. Postman was used to validate the complete flow from API call to database interaction.
 - **Advantages:**  
-This complete deployment validates the system in a real environment, ensures end-to-end backend functionality, and documents integration between cloud services, Lambda functions, and persistent storage.
+  This complete deployment validates the system in a real environment, ensures end-to-end backend functionality, and documents integration between cloud services, Lambda functions, and persistent storage.
 
 ### **Postman Testing:**
+
 A collection of API tests was created in Postman to verify the system's behavior. The tests include:
 
 - GET /payments – Retrieves all payments stored in the database and verifies structure and status code.
@@ -374,44 +399,47 @@ A collection of API tests was created in Postman to verify the system's behavior
 - Unauthorized access – Calls endpoints without authorization headers to confirm the authentication middleware blocks access.
 
 You can access the Postman collection here.
-- **Link:**
-  
+
+- **Link:** [`Postman Collection`](https://.postman.co/workspace/My-Workspace~9a92142f-b52d-4794-85e9-e6682ea30215/collection/40779938-777c5020-cdaf-4e4e-84f0-f86897c5530c?action=share&creator=40779938)
+
 This complete deployment validates the system in a real environment, ensures end-to-end backend functionality, and documents integration between cloud services, Lambda functions, and persistent storage.
 
-###  Backend Architecture 
+### Backend Architecture
 
 1. **REST, GraphQL, gRPC, Monolithic, or Monolithic-MVC?**  
-Usaremos una arquitectura Monolithic-MVC basada en REST utilizando las API Routes de Next.js. Esto nos permite tener todo el backend centralizado, pero bien organizado en capas (controladores, servicios, acceso a datos), lo cual facilita el mantenimiento sin complicar el despliegue ni el desarrollo colaborativo.
+   Usaremos una arquitectura Monolithic-MVC basada en REST utilizando las API Routes de Next.js. Esto nos permite tener todo el backend centralizado, pero bien organizado en capas (controladores, servicios, acceso a datos), lo cual facilita el mantenimiento sin complicar el despliegue ni el desarrollo colaborativo.
 
 2. **Serverless, Cloud, On-Premise, or Hybrid?**  
-Elegimos una arquitectura Serverless en la nube, usando Vercel para desplegar el backend.  
-Esto elimina la necesidad de administrar infraestructura, escala automáticamente según el uso, y reduce costos en esta etapa temprana del proyecto.
+   Elegimos una arquitectura Serverless en la nube, usando Vercel para desplegar el backend.  
+   Esto elimina la necesidad de administrar infraestructura, escala automáticamente según el uso, y reduce costos en esta etapa temprana del proyecto.
 
 3. **Service vs. Microservices?**  
-EchoPay usa una arquitectura de tipo Service (monolito modular). Todo el backend vive en una sola aplicación Next.js, organizada internamente por módulos.  
-Esta opción permite rapidez en el desarrollo y facilidad para colaborar en equipo. En caso de que el sistema crezca, esta estructura facilita una futura migración hacia microservicios si se vuelve necesario dividir responsabilidades por dominio.
+   EchoPay usa una arquitectura de tipo Service (monolito modular). Todo el backend vive en una sola aplicación Next.js, organizada internamente por módulos.  
+   Esta opción permite rapidez en el desarrollo y facilidad para colaborar en equipo. En caso de que el sistema crezca, esta estructura facilita una futura migración hacia microservicios si se vuelve necesario dividir responsabilidades por dominio.
 
 4. **Event-Driven, Queues, Brokers, Producer/Consumer, Pub/Sub?**  
-EchoPay usará una arquitectura event-driven para manejar tareas que no necesitan respuesta inmediata, como:
+   EchoPay usará una arquitectura event-driven para manejar tareas que no necesitan respuesta inmediata, como:
 
-  - Confirmación de pagos 
-  - Envío de notificaciones
-  - Registro de actividad del usuario 
+- Confirmación de pagos
+- Envío de notificaciones
+- Registro de actividad del usuario
 
-Se utilizará Azure Service Bus como broker de mensajes. Los servicios del backend actuarán como productores que envían eventos, y habrá consumidores que procesan esos eventos (por ejemplo, enviar un correo o guardar un log). 
-Se aplicarán los patrones Producer/Consumer y Pub/Sub, según el tipo de evento. 
+Se utilizará Azure Service Bus como broker de mensajes. Los servicios del backend actuarán como productores que envían eventos, y habrá consumidores que procesan esos eventos (por ejemplo, enviar un correo o guardar un log).
+Se aplicarán los patrones Producer/Consumer y Pub/Sub, según el tipo de evento.
 
 5. **API Gateway (Security & Scalability)?**  
-Se usará un API Gateway, principalmente por razones de seguridad y control.  
-La opción elegida es Azure API Management, ya que se alinea con el uso de Azure MSSQL y podría gestionar:
-  - Autenticación centralizada con Auth0 
-  - Rate limiting 
-  - Monitoreo de tráfico 
-  - Manejo de errores y redirección 
+   Se usará un API Gateway, principalmente por razones de seguridad y control.  
+   La opción elegida es Azure API Management, ya que se alinea con el uso de Azure MSSQL y podría gestionar:
 
-Esto mejora la escalabilidad del sistema y protege la API ante picos de uso o accesos no autorizados. 
+- Autenticación centralizada con Auth0
+- Rate limiting
+- Monitoreo de tráfico
+- Manejo de errores y redirección
 
-###  Data Layer Design
+Esto mejora la escalabilidad del sistema y protege la API ante picos de uso o accesos no autorizados.
+
+### Data Layer Design
+
 This section outlines all critical decisions made in the design of the data access layer for the EchoPay system.
 
 1. **Structural – Infrastructure, Architecture, DevOps, DataOps**
@@ -467,7 +495,7 @@ Azure SQL was selected for its robust recovery features, including automated bac
 - **Benefits: High availability; resilience to data loss.**
 
 2. **Object-Oriented Design – Programming Layer**
-   
+
 a) **Transactions: Statements vs Stored Procedures**
 
 We chose to manage transactions programmatically through Sequelize rather than stored procedures, keeping logic flexible and easier to maintain.
@@ -537,7 +565,7 @@ The data model is designed following normalization principles to reduce redundan
 - **Class layers: Sequelize Models.**
 - **Policies: 3NF normalization; enforced relationships.**
 - **Benefits: Prevents redundancy; maintains data consistency.**
- 
 
-##  Architecture Design 
-##  Architecture Compliance Matrix 
+## Architecture Design
+
+## Architecture Compliance Matrix

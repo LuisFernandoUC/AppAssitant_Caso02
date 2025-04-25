@@ -11,9 +11,6 @@ export class PaymentService {
         this.logger.info("Servicio: intentando crear un nuevo pago...");
 
         // Validaciones básicas
-        console.log("--------------");
-        console.log(data);
-        console.log("--------------");
         if (!data.userId || !data.amount || !data.servicio || !data.date) {
             this.logger.error("Servicio: datos incompletos para crear pago");
             throw new Error("Datos de pago incompletos");

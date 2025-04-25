@@ -116,22 +116,6 @@ Obtiene todos los pagos registrados.
 
 ---
 
-## Problemas Encontrados y Soluciones
-
-### 1. `next() called multiple times`
-
-**Solución:** Validación de índice en `MiddlewareChain` para evitar doble llamada a `next()`.
-
-### 2. Errores de conexión con MSSQL
-
-**Solución:** Asegurar cifrado TLS (`encrypt: true`) y configurar `trustServerCertificate` como `false`.
-
-### 3. JSON malformado
-
-**Solución:** Validación y parseo dentro del servicio con mensajes de error personalizados.
-
----
-
 ## Diseño y Patrones Aplicados
 
 - **Chain of Responsibility**: MiddlewareChain
@@ -139,7 +123,6 @@ Obtiene todos los pagos registrados.
 - **Service Layer Pattern**: Separación de lógica de negocio en `PaymentService`
 - **Repository Pattern**: Abstracción de acceso a base de datos
 - **Middleware Optionality**: Middleware puede ser encadenado o omitido fácilmente
-
 ---
 
 ## Estructura del codigo
@@ -163,3 +146,30 @@ Obtiene todos los pagos registrados.
 ```
 
 ---
+
+## Problemas encontrados y soluciones aplicadas (desde la plantilla Serverless)
+
+### 1. Lógica de middleware incrustada en los handlers
+**Problema:** La lógica de los middlewares estaba escrita directamente dentro de cada handler, mezclando responsabilidades y dificultando su reutilización.  
+**Solución:** Se creó una clase `AbstractHandler` que centraliza la ejecución de middlewares y el manejo de errores. Ahora, cada handler solo implementa su lógica de negocio específica.  
+**Beneficio:** Se mejora la reutilización de código, la claridad y la modularidad del sistema.
+
+### 2. Uso de `console.log` en lugar de una estrategia de logging
+**Problema:** El registro de eventos se realizaba con `console.log`, lo cual no es escalable ni adecuado para entornos de producción.  
+**Solución:** Se implementó una clase `CloudLogger` basada en la interfaz `ILogger`, que escribe directamente en `stdout` (capturado por AWS CloudWatch).  
+**Beneficio:** Los logs ahora son estructurados, persistentes y permiten cambiar fácilmente el destino (CloudWatch, archivo, etc.) gracias al patrón Strategy.
+
+### 3. Falta de separación entre lógica de negocio y acceso a datos
+**Problema:** Los handlers accedían directamente al repositorio o base de datos, generando acoplamiento fuerte.  
+**Solución:** Se introdujo una clase `PaymentService` que encapsula las reglas de negocio y delega el almacenamiento en un repositorio inyectado mediante la interfaz `IPaymentRepository`.  
+**Beneficio:** Permite realizar pruebas unitarias más fácilmente, cambiar la fuente de datos sin afectar la lógica y mejora la claridad arquitectónica.
+
+### 4. Cadena de middlewares no configurable
+**Problema:** Todos los middlewares eran estáticos y no se podían activar/desactivar según el entorno.  
+**Solución:** La cadena de middlewares ahora se construye dinámicamente por cada handler, incluyendo middlewares obligatorios (como `AuthMiddleware`) y opcionales (como `LoggerMiddleware`, activado por la variable `USE_LOGGER`).  
+**Beneficio:** Permite configuraciones específicas por entorno y evita procesamiento innecesario en desarrollo.
+
+### 5. Falta de validación o control de errores en las solicitudes
+**Problema:** La API no validaba los datos de entrada, lo que podía generar errores o registros inválidos en la base de datos.  
+**Solución:** Se agregaron validaciones en `PaymentService`, rechazando peticiones incompletas o mal formateadas.  
+**Beneficio:** Se evita la inserción de datos corruptos y se mejora la solidez general del backend.
