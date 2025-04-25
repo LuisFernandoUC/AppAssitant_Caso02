@@ -400,7 +400,7 @@ A collection of API tests was created in Postman to verify the system's behavior
 
 You can access the Postman collection here.
 
-- **Link:** [`Postman Collection`]([[https://.postman.co/workspace/My-Workspace~9a92142f-b52d-4794-85e9-e6682ea30215/collection/40779938-777c5020-cdaf-4e4e-84f0-f86897c5530c?action=share&creator=40779938](https://.postman.co/workspace/My-Workspace~9a92142f-b52d-4794-85e9-e6682ea30215/collection/40779938-777c5020-cdaf-4e4e-84f0-f86897c5530c?action=share&creator=40779938)](https://www.postman.com/docking-module-geologist-85553284/echopay/collection/kq03gt5/echopay-api?action=share&creator=40779938))
+- **Link:** [`Postman Collection`](https://www.postman.com/docking-module-geologist-85553284/workspace/echopay/collection/40779938-777c5020-cdaf-4e4e-84f0-f86897c5530c?action=share&creator=40779938)
 
 This complete deployment validates the system in a real environment, ensures end-to-end backend functionality, and documents integration between cloud services, Lambda functions, and persistent storage.
 
