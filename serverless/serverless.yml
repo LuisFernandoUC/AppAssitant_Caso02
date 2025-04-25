@@ -1,0 +1,47 @@
+service: echopay-backend
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: dev
+  memorySize: 128
+  timeout: 10
+  environment:
+    DB_USER: ${env:DB_USER}
+    DB_PASS: ${env:DB_PASS}
+    DB_SERVER: ${env:DB_SERVER}
+    DB_NAME: ${env:DB_NAME}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "logs:CreateLogGroup"
+        - "logs:CreateLogStream"
+        - "logs:PutLogEvents"
+      Resource: "*"
+
+functions:
+  createPayment:
+    handler: src/handlers/createPaymentHandler.handler
+    description: Crear un nuevo pago
+    events:
+      - http:
+          path: payments
+          method: post
+          cors: true
+
+  getPayments:
+    handler: src/handlers/getPaymentHandler.handler
+    description: Obtener lista de pagos
+    events:
+      - http:
+          path: payments
+          method: get
+          cors: true
+
+plugins:
+  - serverless-dotenv-plugin
+
+custom:
+  dotenv:
+    path: .env
