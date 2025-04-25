@@ -312,7 +312,60 @@ These services are invoked through client-side logic and are chosen based on the
 
 ![Texto alternativo](./assets/Final_FE_Architecture_Diagram.jpg)
 
-##  Backend Architecture 
+## **Backend Design Specifications**  
+
+### Proof of Concepts
+
+**POC Step 1 – Handler Responsibilities (SOLID & Cohesion)**
+- **Challenge faced:**  
+The original template used two handlers with undefined responsibilities and example logic, including inline middleware execution. This needed to be changed to comply with the Single Responsibility Principle.
+- **Solution chosen:**  
+An AbstractHandler class was created to encapsulate middleware execution and error handling. Concrete handlers, such as getPaymentHandler and createPaymentHandler, inherit from this class and are limited to executing their specific business logic. The Template Method pattern was applied to standardize the request execution flow.
+- **Advantages:**  
+This implementation centralizes error control and middleware handling, promotes reusability, and facilitates maintenance by allowing new handlers to be added cleanly and consistently.
+
+**POC Step 2 – README.md Improvements**
+- **Challenge faced:**  
+The initial README was very limited, only offering basic setup instructions. It didn’t explain the project structure or document common development issues.
+- **Solution chosen:**  
+The README.md file was completely rewritten to include a clear guide on the project’s purpose, how to configure it locally, how to deploy it to AWS, and how to test it using Postman. Issues encountered during environment configuration and deployment (e.g., Git submodule conflicts, Serverless plugin problems) were documented along with their solutions.
+- **Advantages:**  
+The updated README serves as a reference for new developers, improves overall system understanding, and reduces setup time by documenting real-world solutions.
+
+**POC Step 3 – Logger Improvements (Design Pattern)**
+- **Challenge faced:**  
+Using console.log directly didn’t allow for structured or reusable logging, nor was it suitable for cloud environments.
+- **Solution chosen:**  
+An ILogger interface was defined, and a ConsoleLogger implementation was created to support log, info, and error levels with timestamp formatting. This logger is injected into services and repositories, applying the Strategy Pattern. It can easily be swapped out for another implementation, such as CloudWatch.
+- **Advantages:**  
+The logger is now decoupled, extensible, and aligned with good development practices. It improves system traceability and facilitates monitoring in real deployments.
+
+**POC Step 4 – Middleware Management (Optional & Mandatory)**
+- **Challenge faced:**  
+The original template did not allow for flexible middleware definition. Everything was hardcoded inside each handler.
+- **Solution chosen:**  
+A middleware interface was designed, and a dynamic execution chain was implemented within the AbstractHandler class. Some middleware, such as AuthMiddleware, is mandatory, while others, like LoggerMiddleware, are conditionally activated using an environment variable (USE_LOGGER). A safeguard was implemented to prevent multiple calls to next().
+- **Advantages:**  
+This pattern allows chaining multiple middleware cleanly, enabling configuration by environment (development vs. production) and ensuring security and modularity.
+
+**POC Step 5 – Repository Layer Improvements**
+
+- **Challenge faced:**
+In the original template, handlers accessed the database directly, resulting in tight coupling and making testing and data source replacement difficult.
+- **Solution chosen:**
+An IPaymentRepository interface was created to define the operations required by repositories. A concrete implementation, PaymentMSSQLRepository, was developed to connect to an Azure SQL database using stored procedures. Additionally, a PaymentService layer was added to handle business rules and normalize data before it is passed to the repository.
+- **Advantages:**
+This abstraction enables testing without relying on a real database, facilitates changing the data source, and improves the backend structure overall.
+
+**POC Step 6 – Deployment & Testing**
+- **Challenge faced:**  
+The template did not include functional deployment examples or integration tests.
+- **Solution chosen:**  
+The project was configured to use the Serverless Framework to deploy getPayments and createPayment Lambda functions on AWS. These functions were connected to an Azure SQL database via stored procedures. Postman was used to validate the complete flow from API call to database interaction.
+- **Advantages:**  
+This complete deployment validates the system in a real environment, ensures end-to-end backend functionality, and documents integration between cloud services, Lambda functions, and persistent storage.
+
+###  Backend Architecture 
 
 1. **REST, GraphQL, gRPC, Monolithic, or Monolithic-MVC?**  
 Usaremos una arquitectura Monolithic-MVC basada en REST utilizando las API Routes de Next.js. Esto nos permite tener todo el backend centralizado, pero bien organizado en capas (controladores, servicios, acceso a datos), lo cual facilita el mantenimiento sin complicar el despliegue ni el desarrollo colaborativo.
@@ -345,8 +398,7 @@ La opción elegida es Azure API Management, ya que se alinea con el uso de Azure
 
 Esto mejora la escalabilidad del sistema y protege la API ante picos de uso o accesos no autorizados. 
 
-
-##  Data Layer Design
+###  Data Layer Design
 This section outlines all critical decisions made in the design of the data access layer for the EchoPay system.
 
 1. **Structural – Infrastructure, Architecture, DevOps, DataOps**
