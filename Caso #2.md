@@ -365,6 +365,19 @@ The project was configured to use the Serverless Framework to deploy getPayments
 - **Advantages:**  
 This complete deployment validates the system in a real environment, ensures end-to-end backend functionality, and documents integration between cloud services, Lambda functions, and persistent storage.
 
+### **Postman Testing:**
+A collection of API tests was created in Postman to verify the system's behavior. The tests include:
+
+- GET /payments – Retrieves all payments stored in the database and verifies structure and status code.
+- POST /payments (valid input) – Creates a payment with all required fields and verifies correct insertion.
+- POST /payments (missing fields) – Sends an incomplete request to validate input validation and error response.
+- Unauthorized access – Calls endpoints without authorization headers to confirm the authentication middleware blocks access.
+
+You can access the Postman collection here.
+- **Link:**
+  
+This complete deployment validates the system in a real environment, ensures end-to-end backend functionality, and documents integration between cloud services, Lambda functions, and persistent storage.
+
 ###  Backend Architecture 
 
 1. **REST, GraphQL, gRPC, Monolithic, or Monolithic-MVC?**  
