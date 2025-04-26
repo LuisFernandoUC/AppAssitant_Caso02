@@ -284,10 +284,8 @@ To design and build the visual components of EchoPay, we will follow the followi
 
 - SOLID (must):
   
-  To enforce the Single Responsibility Principle across the entire frontend, we apply a project-wide rule: every file must have a clear, singular purpose, whether it's visual, logical, or structural.
-
-We define the following conventions:
-
+  To enforce the Single Responsibility Principle across the entire frontend, we apply a project-wide rule: every file must have a clear, singular purpose, whether it's visual, logical, or structural. We define the following conventions:
+  
   1. Atoms should only handle visual rendering (no logic or state)
 
   2. Hooks like usePaymentHandler.ts must only manage business logic (not UI, not services)
