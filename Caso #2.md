@@ -282,21 +282,76 @@ However, since the system uses Next.js, Server-Side Rendering (SSR) can also be 
 
 To design and build the visual components of EchoPay, we will follow the following patterns and principles, adapted to our stack (React + Tailwind + TypeScript):
 
-- SOLID (must): Each component will have a single, clear responsibility, avoiding the mixing of multiple functions.
-- DRY (must): We will reuse components and logic wherever possible to avoid code duplication.
-- Separation of Concerns (must): We will separate business logic, visual structure, and styling. For example, using hooks for logic and pure components for presentation.
-- Responsive Design (must): The entire interface will be designed to adapt well to different screen sizes, leveraging Tailwind CSS utilities.
-- Atomic Design (all): We will organize our components in levels: atoms (buttons, inputs), molecules (simple forms), organisms (complete sections like a payment form), templates, and pages.
-- MVVM (React): While React doesn’t strictly follow MVVM, we will use it as a guide by separating the view (JSX), presentation logic (hooks), and data/service access.
-- State Management Pattern (web): We will use local state (useState, useContext, useReducer) for simple components. If data handling becomes more complex in the future, we will integrate Redux Toolkit due to its good compatibility with TypeScript and Next.js.
+- SOLID (must):
+  
+  To enforce the Single Responsibility Principle across the entire frontend, we apply a project-wide rule: every file must have a clear, singular purpose, whether it's visual, logical, or structural.
+
+We define the following conventions:
+
+1. Atoms should only handle visual rendering (no logic or state)
+
+2. Hooks like usePaymentHandler.ts must only manage business logic (not UI, not services)
+
+3. Services like paymentService.ts must only interact with external APIs (no logic, no state, no UI).
+   
+- DRY (must):
+
+  In addition to creating shared components (InputField.tsx, Button.tsx) and utility hooks (useAuth.ts, useErrorHandler.ts), we define code duplication boundaries:
+
+1. Any piece of logic repeated more than once must be abstracted (e.g., validation, formatting)
+
+2. Shared logic lives in hooks/ or utils/
+
+3. Shared components live in atoms/ or molecules/.
+   
+- Separation of Concerns (must):
+
+  1. Business logic is handled in hooks such as useAuth.ts and usePaymentHandler.ts.
+
+2. Presentation logic is handled in clean functional components (e.g., PaymentForm.tsx).
+
+3. Styling is managed using Tailwind utility classes, fully separated from logic and JSX structure.
+   
+- Responsive Design (must):
+
+  All components are responsive using Tailwind CSS classes like grid-cols-1 md:grid-cols-2, etc.
+For instance, templates/DashboardLayout.tsx defines grid/flex layouts that adapt to screen size.
+
+- Atomic Design (all):
+
+  1. Atoms: smallest elements, like Button.tsx, InputField.tsx, Label.tsx, with no internal layout
+
+2. Molecules: basic combinations, like TextInputWithLabel.tsx, CheckboxGroup.tsx, composed from atoms
+
+3. Organisms: sections composed of multiple molecules and atoms, like PaymentSection.tsx, but not entire forms
+
+4. Templates: layout skeletons (DashboardLayout.tsx)
+
+5. Pages: route-bound compositions (DashboardPage.tsx, PaymentPage.tsx).
+   
+- MVVM (React):
+
+  1. View: JSX markup in pages like PaymentPage.tsx
+
+2. ViewModel: Hook-based logic (usePaymentHandler.ts)
+
+3. Model: Data types and service calls (types/Payment.ts, services/paymentService.ts)
+   
+- State Management Pattern (web):
+
+  We will integrate Zustand as a lightweight yet robust state management framework. This allows shared state access across pages and components without prop drilling or context overload. Zustand is now used in:
+
+1. AuthContext.tsx (refactored)
+
+2. Navbar.tsx (reads user state)
+
+3. PaymentPage.tsx (reads state to validate access).
 
 #### Toolkits and Standards
 
-- Tailwind CSS: It will be the foundation for applying styles quickly, cleanly, and with strong responsive control.
-- Storybook: It will allow us to work on visual components in isolation and document them for the team.
-- Chakra UI (optional): It will be used to speed up the design of certain components when development velocity is a priority.
-- Material Design: We will use it as a visual reference for consistency, hierarchy, and accessibility.
-- Vercel: It will be the deployment platform for the frontend, taking advantage of its integration with Next.js for CI/CD and automatic previews.
+- Tailwind CSS: Tailwind CSS is the sole styling system used in every visual component.
+- Storybook: It is configured for isolated development and documentation of atoms and molecules.
+- Vercel: It is the deployment platform, taking advantage of Next.js integration.
 
 ## Object design patterns
 
