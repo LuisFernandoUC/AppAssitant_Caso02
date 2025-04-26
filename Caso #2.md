@@ -298,11 +298,11 @@ We define the following conventions:
 
   In addition to creating shared components (InputField.tsx, Button.tsx) and utility hooks (useAuth.ts, useErrorHandler.ts), we define code duplication boundaries:
 
-1. Any piece of logic repeated more than once must be abstracted (e.g., validation, formatting)
+  1. Any piece of logic repeated more than once must be abstracted (e.g., validation, formatting)
 
-2. Shared logic lives in hooks/ or utils/
+  2. Shared logic lives in hooks/ or utils/
 
-3. Shared components live in atoms/ or molecules/.
+  3. Shared components live in atoms/ or molecules/.
    
 - Separation of Concerns (must):
 
@@ -310,7 +310,7 @@ We define the following conventions:
 
   2. Presentation logic is handled in clean functional components (e.g., PaymentForm.tsx).
 
-3. Styling is managed using Tailwind utility classes, fully separated from logic and JSX structure.
+  3. Styling is managed using Tailwind utility classes, fully separated from logic and JSX structure.
    
 - Responsive Design (must):
 
