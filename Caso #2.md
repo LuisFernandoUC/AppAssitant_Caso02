@@ -288,11 +288,11 @@ To design and build the visual components of EchoPay, we will follow the followi
 
 We define the following conventions:
 
-1. Atoms should only handle visual rendering (no logic or state)
+  1. Atoms should only handle visual rendering (no logic or state)
 
-2. Hooks like usePaymentHandler.ts must only manage business logic (not UI, not services)
+  2. Hooks like usePaymentHandler.ts must only manage business logic (not UI, not services)
 
-3. Services like paymentService.ts must only interact with external APIs (no logic, no state, no UI).
+  3. Services like paymentService.ts must only interact with external APIs (no logic, no state, no UI).
    
 - DRY (must):
 
