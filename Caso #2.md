@@ -321,31 +321,31 @@ For instance, templates/DashboardLayout.tsx defines grid/flex layouts that adapt
 
   1. Atoms: smallest elements, like Button.tsx, InputField.tsx, Label.tsx, with no internal layout
 
-2. Molecules: basic combinations, like TextInputWithLabel.tsx, CheckboxGroup.tsx, composed from atoms
+  2. Molecules: basic combinations, like TextInputWithLabel.tsx, CheckboxGroup.tsx, composed from atoms
 
-3. Organisms: sections composed of multiple molecules and atoms, like PaymentSection.tsx, but not entire forms
+  3. Organisms: sections composed of multiple molecules and atoms, like PaymentSection.tsx, but not entire forms
 
-4. Templates: layout skeletons (DashboardLayout.tsx)
+  4. Templates: layout skeletons (DashboardLayout.tsx)
 
-5. Pages: route-bound compositions (DashboardPage.tsx, PaymentPage.tsx).
+  5. Pages: route-bound compositions (DashboardPage.tsx, PaymentPage.tsx).
    
 - MVVM (React):
 
   1. View: JSX markup in pages like PaymentPage.tsx
 
-2. ViewModel: Hook-based logic (usePaymentHandler.ts)
+  2. ViewModel: Hook-based logic (usePaymentHandler.ts)
 
-3. Model: Data types and service calls (types/Payment.ts, services/paymentService.ts)
+  3. Model: Data types and service calls (types/Payment.ts, services/paymentService.ts)
    
 - State Management Pattern (web):
 
   We will integrate Zustand as a lightweight yet robust state management framework. This allows shared state access across pages and components without prop drilling or context overload. Zustand is now used in:
 
-1. AuthContext.tsx (refactored)
+  1. AuthContext.tsx (refactored)
 
-2. Navbar.tsx (reads user state)
+  2. Navbar.tsx (reads user state)
 
-3. PaymentPage.tsx (reads state to validate access).
+  3. PaymentPage.tsx (reads state to validate access).
 
 #### Toolkits and Standards
 
