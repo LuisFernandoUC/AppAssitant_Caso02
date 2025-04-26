@@ -308,7 +308,7 @@ We define the following conventions:
 
   1. Business logic is handled in hooks such as useAuth.ts and usePaymentHandler.ts.
 
-2. Presentation logic is handled in clean functional components (e.g., PaymentForm.tsx).
+  2. Presentation logic is handled in clean functional components (e.g., PaymentForm.tsx).
 
 3. Styling is managed using Tailwind utility classes, fully separated from logic and JSX structure.
    
