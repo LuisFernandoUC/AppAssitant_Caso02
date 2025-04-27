@@ -359,7 +359,7 @@ For instance, templates/DashboardLayout.tsx defines grid/flex layouts that adapt
 
 The following diagram illustrates how UI components in the EchoPay frontend communicate directly with external services for user experience, automation, and interaction.
 
-![Texto alternativo](./assets/External_Services.png)
+![Texto alternativo](./assets/External_Services_EchoPay.png)
 
 **Description of Services:**
 
