@@ -386,34 +386,34 @@ These services are invoked through client-side logic and are chosen based on the
 
 ## **Backend Design Specifications**
 
-## Proof of Concepts
+### Proof of Concepts
 
-### POC 1 – Handler Redesign
+**POC 1 – Handler Redesign**
 - **Problem**: Initial handlers had mixed responsibilities and manually managed middleware, violating SOLID principles.
 - **Solution**: An `AbstractHandler` class was created to centralize middleware execution and error handling. Specific handlers such as `getPaymentHandler` and `createPaymentHandler` inherit from it and focus solely on business logic.
 - **Impact**: Improved code maintainability, cleaner separation of concerns, and easier error tracking.
 
-### POC 2 – Documentation Upgrade
+**POC 2 – Documentation Upgrade**
 - **Problem**: The original README lacked detailed setup, deployment instructions, and troubleshooting.
 - **Solution**: The README was expanded to explain project purpose, local setup, deployment, and common problems with solutions.
 - **Impact**: Accelerated onboarding for new developers and reduced environment setup errors.
 
-### POC 3 – Logger Abstraction
+**POC 3 – Logger Abstraction**
 - **Problem**: Usage of `console.log` scattered across the codebase, unsuitable for production.
 - **Solution**: Introduced an `ILogger` interface and a `ConsoleLogger` implementation using the Strategy Pattern.
 - **Impact**: Enabled structured, flexible, and environment-specific logging, enhancing system observability.
 
-### POC 4 – Middleware Chain Implementation
+**POC 4 – Middleware Chain Implementation**
 - **Problem**: Hardcoded middleware inside handlers with no flexibility.
 - **Solution**: Designed a dynamic middleware execution chain supporting mandatory and optional middlewares (e.g., logger based on environment variable `USE_LOGGER`).
 - **Impact**: Simplified middleware management, ensured modularity, and improved security enforcement.
 
-### POC 5 – Repository Layer Refactor
+**POC 5 – Repository Layer Refactor**
 - **Problem**: Tight coupling between handlers and direct database access.
 - **Solution**: Defined an `IPaymentRepository` interface and added a `PaymentService` layer. Concrete implementation `PaymentMSSQLRepository` connects to Azure SQL.
 - **Impact**: Enhanced testing capability, flexibility in switching databases, and better compliance with DDD practices.
 
-### POC 6 – Real Deployment and Testing
+**POC 6 – Real Deployment and Testing**
 - **Problem**: No deployment example or real environment validation in the initial template.
 - **Solution**: Configured Serverless Framework deployment for AWS Lambda, connected it with Azure MSSQL, and validated full API flows using Postman.
 - **Impact**: Ensured real-world readiness, validated complete system behavior, and demonstrated effective cloud integration.
