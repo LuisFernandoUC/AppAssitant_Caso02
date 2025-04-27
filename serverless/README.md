@@ -1,36 +1,34 @@
 # EchoPay Backend
 
-Este codigo y consiste en una API desarrollada, desplegada en AWS Lambda utilizando el Serverless Framework. La plataforma gestiona pagos recurrentes.
+This code consists of an API developed and deployed on AWS Lambda using the Serverless Framework. The platform manages recurring payments.
 
 ---
 
-## Arquitectura
+## Architecture
 
-- **Handlers**: Se encargan de recibir las solicitudes HTTP (`createPaymentHandler`, `getPaymentHandler`).
-- **Middleware**: Se implementa `AuthMiddleware` con un `MiddlewareChain` encadenable (Chain of Responsibility Pattern).
-- **Logger**: Diseño desacoplado con `ConsoleLogger` (basado en Strategy Pattern).
-- **Service Layer**: `PaymentService` maneja la lógica de negocio y valida entradas.
-- **Repository Layer**: `PaymentRepository` se comunica con la base de datos MSSQL.
-- **Utils**: Conexión a MSSQL a través de `mssqlConnector.ts` usando variables de entorno seguras.
+- **Handlers**: Responsible for receiving HTTP requests (`createPaymentHandler`, `getPaymentHandler`).
+- **Middleware**: Implements `AuthMiddleware` using a chainable `MiddlewareChain` (Chain of Responsibility Pattern).
+- **Logger**: Decoupled design with `ConsoleLogger` (based on the Strategy Pattern).
+- **Service Layer**: `PaymentService` handles business logic and input validation.
+- **Repository Layer**: `PaymentRepository` communicates with the MSSQL database.
+- **Utils**: Connects to MSSQL through `mssqlConnector.ts` using secure environment variables.
 
 ---
 
-## Despliegue
+## Deployment
 
-La aplicación está desplegada en AWS Lambda utilizando Serverless Framework.
+The application is deployed on AWS Lambda using the Serverless Framework.
 
-### Requisitos Previos
+### Prerequisites
 
 - Node.js 18+
 - AWS CLI (`aws configure`)
 - Serverless Framework (`npm install -g serverless`)
-- `.env` configurado con las credenciales de la base de datos
+- `.env` configured with database credentials
 
-### Variables de entorno (.env)
+### Environment Variables (.env)
 
-Este proyecto usa un archivo `.env` para cargar las credenciales de base de datos desde `serverless.yml`.
-
-Crea un archivo `.env` en la raíz del proyecto siguiendo este ejemplo:
+Create a `.env` file at the project root with the following structure:
 
 ```
 DB_USER=your_user
@@ -39,48 +37,48 @@ DB_SERVER=your_server.database.windows.net
 DB_NAME=your_db
 ```
 
-### Comandos de despliegue
+### Deployment Commands
 
-1. **Instalar dependencias del proyecto**
+1. **Install project dependencies**
 
 ```bash
 npm install
 ```
 
-2. **Iniciar sesión en Serverless Framework (una sola vez)**
+2. **Login to Serverless Framework (one-time)**
 
 ```bash
 serverless login
 ```
 
-3. **Configurar credenciales de AWS**
+3. **Configure AWS credentials**
 
 ```bash
 aws configure
 ```
 
-4. **Desplegar a AWS Lambda**
+4. **Deploy to AWS Lambda**
 
 ```bash
 serverless deploy
 ```
 
-5. **Ver logs de ejecución (opcional)**
+5. **View execution logs (optional)**
 
 ```bash
 serverless logs -f createPayment
 serverless logs -f getPayments
 ```
 
-6. **Remover el servicio (opcional)**
+6. **Remove the service (optional)**
 
 ```bash
 serverless remove
 ```
 
-## Endpoints
+---
 
-Una vez desplegado, Serverless mostrará los endpoints públicos de la API:
+## Endpoints
 
 ```
 POST https://<your-api-id>.execute-api.us-east-1.amazonaws.com/dev/payments
@@ -91,41 +89,42 @@ GET  https://<your-api-id>.execute-api.us-east-1.amazonaws.com/dev/payments
 
 ### POST /payments
 
-Crea un nuevo pago.
+Creates a new payment.
 
 ```json
 {
-  "userId": "idUsuario",
+  "userId": "userId",
   "amount": 100,
   "date": "2025-04-20",
-  "servicio": "servicio"
+  "servicio": "service"
 }
 ```
 
 ### GET /payments
 
-Obtiene todos los pagos registrados.
+Retrieves all registered payments.
 
 ---
 
-## Pruebas
+## Testing
 
-- Se utilizó **Postman** para validar la API.
-- Se creó una colección con diferentes casos de prueba (válidos e inválidos).
-- Se verificó que el middleware de autenticación rechaza solicitudes sin token.
+- **Postman** was used to validate the API.
+- A collection was created with various test cases (valid and invalid).
+- Authentication middleware was verified to reject requests without a token.
 
 ---
 
-## Diseño y Patrones Aplicados
+## Design and Applied Patterns
 
-- **Chain of Responsibility**: MiddlewareChain
-- **Strategy Pattern**: Logger agnóstico (`ConsoleLogger`, `Logger` interface)
-- **Service Layer Pattern**: Separación de lógica de negocio en `PaymentService`
-- **Repository Pattern**: Abstracción de acceso a base de datos
-- **Middleware Optionality**: Middleware puede ser encadenado o omitido fácilmente
+- **Chain of Responsibility**: `MiddlewareChain`
+- **Strategy Pattern**: Agnostic Logger (`ConsoleLogger`, `Logger` interface)
+- **Service Layer Pattern**: Business logic separated into `PaymentService`
+- **Repository Pattern**: Abstracted database access
+- **Middleware Optionality**: Middleware can be chained or omitted easily
+
 ---
 
-## Estructura del codigo
+## Project Structure
 
 ```
 ├── handlers/
@@ -147,29 +146,29 @@ Obtiene todos los pagos registrados.
 
 ---
 
-## Problemas encontrados y soluciones aplicadas (desde la plantilla Serverless)
+## Problems Encountered and Solutions Applied (based on the Serverless template)
 
-### 1. Lógica de middleware incrustada en los handlers
-**Problema:** La lógica de los middlewares estaba escrita directamente dentro de cada handler, mezclando responsabilidades y dificultando su reutilización.  
-**Solución:** Se creó una clase `AbstractHandler` que centraliza la ejecución de middlewares y el manejo de errores. Ahora, cada handler solo implementa su lógica de negocio específica.  
-**Beneficio:** Se mejora la reutilización de código, la claridad y la modularidad del sistema.
+### 1. Middleware logic embedded within handlers
+**Problem:** Middleware logic was written directly inside each handler, mixing responsibilities and making reuse difficult.  
+**Solution:** An `AbstractHandler` class was created to centralize middleware execution and error handling. Each handler now only implements its specific business logic.  
+**Benefit:** Improved code reuse, clarity, and modularity.
 
-### 2. Uso de `console.log` en lugar de una estrategia de logging
-**Problema:** El registro de eventos se realizaba con `console.log`, lo cual no es escalable ni adecuado para entornos de producción.  
-**Solución:** Se implementó una clase `CloudLogger` basada en la interfaz `ILogger`, que escribe directamente en `stdout` (capturado por AWS CloudWatch).  
-**Beneficio:** Los logs ahora son estructurados, persistentes y permiten cambiar fácilmente el destino (CloudWatch, archivo, etc.) gracias al patrón Strategy.
+### 2. Usage of `console.log` instead of a logging strategy
+**Problem:** Event logging was done with `console.log`, which is not scalable or production-grade.  
+**Solution:** A `CloudLogger` class based on the `ILogger` interface was implemented, writing directly to `stdout` (captured by AWS CloudWatch).  
+**Benefit:** Logs are now structured, persistent, and can easily change the destination (CloudWatch, file, etc.) thanks to the Strategy Pattern.
 
-### 3. Falta de separación entre lógica de negocio y acceso a datos
-**Problema:** Los handlers accedían directamente al repositorio o base de datos, generando acoplamiento fuerte.  
-**Solución:** Se introdujo una clase `PaymentService` que encapsula las reglas de negocio y delega el almacenamiento en un repositorio inyectado mediante la interfaz `IPaymentRepository`.  
-**Beneficio:** Permite realizar pruebas unitarias más fácilmente, cambiar la fuente de datos sin afectar la lógica y mejora la claridad arquitectónica.
+### 3. Lack of separation between business logic and data access
+**Problem:** Handlers accessed the repository or database directly, causing strong coupling.  
+**Solution:** A `PaymentService` class was introduced to encapsulate business rules and delegate storage to an injected repository via the `IPaymentRepository` interface.  
+**Benefit:** Enables easier unit testing, allows switching data sources without affecting business logic, and improves architectural clarity.
 
-### 4. Cadena de middlewares no configurable
-**Problema:** Todos los middlewares eran estáticos y no se podían activar/desactivar según el entorno.  
-**Solución:** La cadena de middlewares ahora se construye dinámicamente por cada handler, incluyendo middlewares obligatorios (como `AuthMiddleware`) y opcionales (como `LoggerMiddleware`, activado por la variable `USE_LOGGER`).  
-**Beneficio:** Permite configuraciones específicas por entorno y evita procesamiento innecesario en desarrollo.
+### 4. Non-configurable middleware chain
+**Problem:** All middlewares were static and could not be enabled/disabled per environment.  
+**Solution:** The middleware chain is now dynamically constructed for each handler, including mandatory middlewares (like `AuthMiddleware`) and optional ones (like `LoggerMiddleware`, activated via `USE_LOGGER`).  
+**Benefit:** Allows environment-specific configurations and avoids unnecessary processing during development.
 
-### 5. Falta de validación o control de errores en las solicitudes
-**Problema:** La API no validaba los datos de entrada, lo que podía generar errores o registros inválidos en la base de datos.  
-**Solución:** Se agregaron validaciones en `PaymentService`, rechazando peticiones incompletas o mal formateadas.  
-**Beneficio:** Se evita la inserción de datos corruptos y se mejora la solidez general del backend.
+### 5. Lack of input validation and error handling
+**Problem:** The API did not validate input data, risking errors or invalid database records.  
+**Solution:** Validations were added inside `PaymentService`, rejecting incomplete or incorrectly formatted requests.  
+**Benefit:** Prevents insertion of corrupt data and enhances overall backend robustness.
