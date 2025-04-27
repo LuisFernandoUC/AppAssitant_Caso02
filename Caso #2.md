@@ -853,3 +853,9 @@ f) **Data Design**
 ## Architecture Design
 
 ## Architecture Compliance Matrix
+
+The following matrix illustrates how the selected architectural decisions fulfill the main functional and non-functional requirements of the system:
+
+![Architecture Compliance Matrix](./Architecture_Compliance_Matrix.jpg)
+
+Each "X" in the matrix indicates that the corresponding component or design pattern significantly contributes to meeting the specific requirement.
