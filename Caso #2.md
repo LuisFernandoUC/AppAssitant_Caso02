@@ -495,59 +495,186 @@ Esto mejora la escalabilidad del sistema y protege la API ante picos de uso o ac
 
 This section outlines all critical decisions made in the design of the data access layer for the EchoPay system.
 
-1. **Structural – Infrastructure, Architecture, DevOps, DataOps**
+**1. Structural – Infrastructure, Architecture, DevOps, DataOps**
 
 a) **Data Topology (OLTP, Master-Slave, Distributed, Replicated, Geo)**
 
-The system is designed as an OLTP application using a single-region primary with geo-replication for resilience.
+**Cloud service technology:**
 
-- **Cloud service technology: Azure SQL Database with geo-replication enabled.**
-- **Design patterns: None applicable (infra-level decision).**
-- **Class layers: Standard API → Service → Repository → DB.**
-- **Policies: Geo-redundant backups; single-region primary; high-availability tier.**
-- **Benefits: Reliable for OLTP workloads; ensures regional redundancy.**
+Azure SQL Database, single instance (primary), geo-replicated to a secondary Azure region for disaster recovery.
 
-b) **Big Data Repositories (Hive, Snowflake, etc.)**
+**Object-oriented design patterns:**
 
-Big data technologies are not required in the current scope of EchoPay, as the system focuses solely on real-time transactional data.
+Not applicable (infra-level decision).
 
-- **Cloud service technology: None used.**
-- **Design patterns: Not applicable.**
-- **Class layers: Not applicable.**
-- **Policies: EchoPay does not manage analytical or big data pipelines.**
-- **Benefits: Simplicity; reduced costs and complexity.**
+**Class layers for data access:**
 
-c) **Relational vs Document Database**
+API → Service Layer → Repository Layer → ORM (Sequelize) → Azure SQL.
 
-A relational database was selected to support strong consistency and enforce structured financial data models.
+**Configuration policies/rules:**
 
-- **Cloud service technology: Azure SQL (Relational).**
-- **Design patterns: Repository, DAO.**
-- **Class layers: Sequelize ORM on top of Azure SQL.**
-- **Policies: Tables normalized; strict schema enforcement.**
-- **Benefits: ACID transactions; ideal for structured financial data.**
+Database hosted on Azure SQL.
 
-d) **Tenancy, Access Permissions, Security**
+**Geo-replication enabled.**
 
-We prioritized multi-level access control and secure handling of sensitive data using standard tools from Azure and Auth0.
+Access restricted by VNET and IP whitelisting to trusted services only (e.g., Vercel servers, Azure API Management).
 
-- **Cloud service technology: Azure AD, Azure Key Vault, Auth0.**
-- **Design patterns: Strategy (for roles/permissions), RBAC.**
-- **Class layers: Middleware → Service → Policy Validator.**
-- **Policies: JWT validation, RBAC on routes, secrets in Key Vault.**
-- **Benefits: Fine-grained control; secure access management.**
+**Expected benefits:**
+
+- Fully managed service reduces maintenance overhead.
+- Geo-replication ensures high availability and fast disaster recovery.
+- Azure SQL is mature, supports strong consistency and complex transactions.
+
+**Decision rationale:**
+
+We selected OLTP because EchoPay deals with frequent, critical transactions (payments, user management) requiring speed and integrity. A single instance with geo-replication balances reliability and simplicity for our current and near-future scale.
+
+b) **Big Data Repositories**
+
+**Cloud service technology:**
+
+No Big Data repositories required at this stage.
+
+**Object-oriented design patterns:**
+
+Not applicable.
+
+**Class layers for data access:**
+
+Not applicable.
+
+**Configuration policies/rules:**
+
+- No data pipelines to data lakes or Snowflake.
+- No ETL jobs currently scheduled.
+
+**Expected benefits:**
+
+- Lower complexity, faster development cycles.
+- Reduced infrastructure costs.
+
+**Decision rationale:**
+
+EchoPay's data is operational (transactional) rather than analytical. There is no current plan to feed into a Data Lake or Big Data ecosystem. However, if future analysis needs arise, batch exports could be integrated.
+
+c) **Database Engine (Relational vs NoSQL)**
+
+**Cloud service technology:**
+
+Azure SQL Database (Relational).
+
+**Object-oriented design patterns:**
+
+Repository and DAO patterns.
+
+**Class layers for data access:**
+
+Sequelize ORM → Azure SQL.
+
+**Configuration policies/rules:**
+
+- Data strongly typed and normalized (3NF).
+- Enforced referential integrity via foreign keys.
+
+**Expected benefits:**
+
+- Ensures ACID compliance and structured relationships.
+- Fits perfectly with transaction-heavy systems like EchoPay.
+
+**Decision rationale:**
+
+Given the financial nature of EchoPay, consistency and relational integrity are non-negotiable. NoSQL flexibility isn't necessary or beneficial for this use case.
+
+d) **Tenancy, Data Access Control, Privacy, and Security**
+
+**Cloud service technology:**
+
+Azure SQL Database, Azure Key Vault, Auth0 Identity Provider.
+
+**Object-oriented design patterns:**
+
+Strategy Pattern for tenant management; Builder Pattern for database connection factory (TenantManager).
+
+**Class layers for data access:**
+
+API Layer → TenantManager Layer → Service Layer → Repository Layer → Database Proxy.
+
+**Configuration policies/rules:**
+
+1) **Sensitive Data Protection:**
+
+    **Fields encrypted:**
+
+    - Company contact information.
+    - Payment configuration data for memberships.
+    - User email addresses.
+
+    **Fields hashed:**
+
+    - All passwords and personal identification numbers (PINs).
+
+    **Checksums applied:**
+
+    - On transactions, payments, logs, and benefits tables.
+
+2) **Multitenancy Isolation:**
+
+- EchoPay is a multitenant system by design.
+- Every data access passes through a TenantManager layer that enforces tenant context.
+- Services cannot directly access the database without tenant-scoped queries.
+- Database access restricted through a proxy layer; whitelisted services only.
+
+3) **Additional Security Measures:**
+
+- Encryption keys managed in Azure Key Vault.
+- JWT authentication with RBAC policies enforced on services.
+- Secrets rotated regularly via DevOps processes.
+
+**Expected benefits:**
+
+- In case of database breach, encrypted and hashed information remains secure.
+- Strict tenant isolation prevents accidental or malicious data exposure.
+- Scalability across multiple tenants without duplicating databases.
+- Reduced infrastructure and maintenance costs.
+- Improved resilience against human error or coding mistakes.
+
+**Decision rationale:** 
+
+Given EchoPay’s multitenant architecture, isolating tenant data is critical for security and compliance.
+By enforcing access through a TenantManager layer and encrypting/hashing sensitive fields, the platform ensures that even in worst-case scenarios (e.g., breach or software bug), exposure is minimal and isolated.
+This design balances security, cost efficiency, and scalability as the system grows.
 
 e) **Recovery and Fault Tolerance**
 
-Azure SQL was selected for its robust recovery features, including automated backups and geo-redundancy to handle unexpected failures.
+**Cloud service technology:**
 
-- **Cloud service technology: Azure SQL (Auto backup + geo-replication).**
-- **Design patterns: Retry logic.**
-- **Class layers: Error Handler → Retry Logic → DB access.**
-- **Policies: Point-in-time recovery, auto-failover, backup retention (30 days).**
-- **Benefits: High availability; resilience to data loss.**
+Azure SQL backup services + geo-replication.
 
-2. **Object-Oriented Design – Programming Layer**
+**Object-oriented design patterns:**
+
+Retry pattern for transient failures.
+
+**Class layers for data access:**
+
+Error Handler → Retry Service → Repository Layer.
+
+**Configuration policies/rules:**
+
+- Automated backups with 30-day retention.
+- Point-in-time recovery enabled.
+- Active geo-replication for disaster recovery.
+
+**Expected benefits:**
+
+- Minimal downtime.
+- Fast and granular recovery options.
+- Reduced risk of data loss.
+
+**Decision rationale:**
+
+High availability and disaster recovery are non-optional for a payment system. Azure SQL provides these guarantees without adding manual infrastructure burden.
+
+**2. Object-Oriented Design – Programming Layer**
 
 a) **Transactions: Statements vs Stored Procedures**
 
