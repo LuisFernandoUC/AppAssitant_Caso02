@@ -460,36 +460,39 @@ This complete deployment validates the system in a real environment, ensures end
 ### Backend Architecture
 
 1. **REST, GraphQL, gRPC, Monolithic, or Monolithic-MVC?**  
-   Usaremos una arquitectura Monolithic-MVC basada en REST utilizando las API Routes de Next.js. Esto nos permite tener todo el backend centralizado, pero bien organizado en capas (controladores, servicios, acceso a datos), lo cual facilita el mantenimiento sin complicar el despliegue ni el desarrollo colaborativo.
+   We will use a Monolithic-MVC architecture based on REST, utilizing Next.js API Routes. This allows us to centralize the backend while maintaining a clean layer separation (controllers, services, data access), making it easier to maintain without complicating deployment or collaborative development.
 
 2. **Serverless, Cloud, On-Premise, or Hybrid?**  
-   Elegimos una arquitectura Serverless en la nube, usando Vercel para desplegar el backend.  
-   Esto elimina la necesidad de administrar infraestructura, escala automáticamente según el uso, y reduce costos en esta etapa temprana del proyecto.
+   We have chosen a Serverless architecture deployed on the cloud, using Vercel to host the backend.
+This removes the need to manage infrastructure, automatically scales based on usage, and reduces costs during this early stage of the project.
 
 3. **Service vs. Microservices?**  
-   EchoPay usa una arquitectura de tipo Service (monolito modular). Todo el backend vive en una sola aplicación Next.js, organizada internamente por módulos.  
-   Esta opción permite rapidez en el desarrollo y facilidad para colaborar en equipo. En caso de que el sistema crezca, esta estructura facilita una futura migración hacia microservicios si se vuelve necesario dividir responsabilidades por dominio.
+   EchoPay adopts a Service (modular monolith) architecture.
+The entire backend lives inside a single Next.js application, internally organized by modules.
+This approach enables faster development and easier team collaboration.
+If the system grows, the current modular structure would simplify a future migration to microservices by separating domain-specific responsibilities.
 
 4. **Event-Driven, Queues, Brokers, Producer/Consumer, Pub/Sub?**  
-   EchoPay usará una arquitectura event-driven para manejar tareas que no necesitan respuesta inmediata, como:
+   EchoPay will use an event-driven architecture to handle asynchronous tasks that do not require an immediate response, such as:
 
-- Confirmación de pagos
-- Envío de notificaciones
-- Registro de actividad del usuario
+- Payment confirmation
+- Notification sending
+- User activity logging
 
-Se utilizará Azure Service Bus como broker de mensajes. Los servicios del backend actuarán como productores que envían eventos, y habrá consumidores que procesan esos eventos (por ejemplo, enviar un correo o guardar un log).
-Se aplicarán los patrones Producer/Consumer y Pub/Sub, según el tipo de evento.
+Azure Service Bus will be used as the message broker.
+Backend services will act as event producers, while consumers will process the events (e.g., sending emails or logging activities).
+Both the Producer/Consumer and Pub/Sub patterns will be applied depending on the event type.
 
 5. **API Gateway (Security & Scalability)?**  
-   Se usará un API Gateway, principalmente por razones de seguridad y control.  
-   La opción elegida es Azure API Management, ya que se alinea con el uso de Azure MSSQL y podría gestionar:
+   An API Gateway will be implemented mainly for security and control purposes.
+The selected option is Azure API Management, as it aligns with our use of Azure MSSQL and offers:
 
-- Autenticación centralizada con Auth0
+- Centralized authentication with Auth0
 - Rate limiting
-- Monitoreo de tráfico
-- Manejo de errores y redirección
+- Traffic monitoring
+- Error handling and redirection
 
-Esto mejora la escalabilidad del sistema y protege la API ante picos de uso o accesos no autorizados.
+This improves system scalability and protects the API against traffic spikes or unauthorized access.
 
 ### Data Layer Design
 
