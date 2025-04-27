@@ -498,111 +498,111 @@ This improves system scalability and protects the API against traffic spikes or 
 
 This section outlines all critical decisions made in the design of the data access layer for the EchoPay system.
 
-**1. Structural – Infrastructure, Architecture, DevOps, DataOps**
+### **1. Structural – Infrastructure, Architecture, DevOps, DataOps**
 
 a) **Data Topology (OLTP, Master-Slave, Distributed, Replicated, Geo)**
 
-**Cloud service technology:**
+- **Cloud service technology:**
 
-Azure SQL Database, single instance (primary), geo-replicated to a secondary Azure region for disaster recovery.
+  Azure SQL Database, single instance (primary), geo-replicated to a secondary Azure region for disaster recovery.
 
-**Object-oriented design patterns:**
+- **Object-oriented design patterns:**
 
-Not applicable (infra-level decision).
+  Not applicable (infra-level decision).
 
-**Class layers for data access:**
+- **Class layers for data access:**
 
-API → Service Layer → Repository Layer → ORM (Sequelize) → Azure SQL.
+  API → Service Layer → Repository Layer → ORM (Sequelize) → Azure SQL.
 
-**Configuration policies/rules:**
+- **Configuration policies/rules:**
 
-Database hosted on Azure SQL.
+    - Database hosted on Azure SQL.
+    - Geo-replication enabled.
+    - Access restricted by VNET and IP whitelisting to trusted services only (e.g., Vercel servers, Azure API Management).
 
-**Geo-replication enabled.**
+- **Expected benefits:**
 
-Access restricted by VNET and IP whitelisting to trusted services only (e.g., Vercel servers, Azure API Management).
+    - Fully managed service reduces maintenance overhead.
+    - High availability and automatic disaster recovery.
+    - Geo-replication ensures high availability and fast disaster recovery.
+    - Azure SQL is mature, supports strong consistency and complex transactions.
 
-**Expected benefits:**
+- **Decision rationale:**
 
-- Fully managed service reduces maintenance overhead.
-- Geo-replication ensures high availability and fast disaster recovery.
-- Azure SQL is mature, supports strong consistency and complex transactions.
-
-**Decision rationale:**
-
-We selected OLTP because EchoPay deals with frequent, critical transactions (payments, user management) requiring speed and integrity. A single instance with geo-replication balances reliability and simplicity for our current and near-future scale.
+  We chose a single-instance OLTP setup with geo-replication because EchoPay demands high-speed transactional processing with strong   consistency. Alternatives like master-slave setups would introduce complexity for synchronization without offering critical benefits at our scale. Distributed databases (like CosmosDB or Spanner) were not chosen because they are optimized for massive global-scale systems, which would unnecessarily complicate operations and increase costs.
 
 b) **Big Data Repositories**
 
-**Cloud service technology:**
+- **Cloud service technology:**
 
-No Big Data repositories required at this stage.
+  No Big Data repositories needed at this stage.
 
-**Object-oriented design patterns:**
+- **Object-oriented design patterns:**
 
-Not applicable.
+  Not applicable.
 
-**Class layers for data access:**
+- **Class layers for data access:**
 
-Not applicable.
+  Not applicable.
 
-**Configuration policies/rules:**
+- **Configuration policies/rules:**
 
-- No data pipelines to data lakes or Snowflake.
-- No ETL jobs currently scheduled.
+    - No pipelines to Snowflake, Hive, Bigtable, or Data Lakes.
+    - No ETL jobs currently scheduled.
 
-**Expected benefits:**
+- **Expected benefits:**
 
-- Lower complexity, faster development cycles.
-- Reduced infrastructure costs.
+    - Lower complexity, faster development cycles.
+    - Simpler infraestructure
+    - Faster and cheaper development.
 
-**Decision rationale:**
+- **Decision rationale:**
 
-EchoPay's data is operational (transactional) rather than analytical. There is no current plan to feed into a Data Lake or Big Data ecosystem. However, if future analysis needs arise, batch exports could be integrated.
+  EchoPay focuses on real-time transactional data, not large-scale analytics. Implementing Big Data tooling like Snowflake or Hadoop   would bring unnecessary complexity and costs without immediate benefits. However, if future analysis needs arise, batch exports could be integrated.
 
 c) **Database Engine (Relational vs NoSQL)**
 
-**Cloud service technology:**
+- **Cloud service technology:**
 
-Azure SQL Database (Relational).
+  Azure SQL Database (Relational).
 
-**Object-oriented design patterns:**
+- **Object-oriented design patterns:**
 
-Repository and DAO patterns.
+  Repository and DAO patterns.
 
-**Class layers for data access:**
+- **Class layers for data access:**
 
-Sequelize ORM → Azure SQL.
+  Sequelize ORM → Azure SQL.
 
-**Configuration policies/rules:**
+- **Configuration policies/rules:**
 
-- Data strongly typed and normalized (3NF).
-- Enforced referential integrity via foreign keys.
+    - Data strongly typed and normalized (3NF).
+    - Enforced referential integrity via foreign keys.
 
-**Expected benefits:**
+- **Expected benefits:**
 
-- Ensures ACID compliance and structured relationships.
-- Fits perfectly with transaction-heavy systems like EchoPay.
+    - Ensures ACID compliance and structured relationships.
+    - Fits perfectly with transaction-heavy systems like EchoPay.
 
-**Decision rationale:**
+- **Decision rationale:**
 
-Given the financial nature of EchoPay, consistency and relational integrity are non-negotiable. NoSQL flexibility isn't necessary or beneficial for this use case.
+  EchoPay manages sensitive financial transactions where data consistency and reliability are critical. NoSQL engines like MongoDB or DynamoDB offer flexibility but sacrifice strong consistency guarantees without heavy manual workarounds. Relational databases natively provide the strict consistency and transactional control EchoPay needs.
 
 d) **Tenancy, Data Access Control, Privacy, and Security**
 
-**Cloud service technology:**
+- **Cloud service technology:**
 
-Azure SQL Database, Azure Key Vault, Auth0 Identity Provider.
+  Azure SQL Database, Azure Key Vault, Auth0 Identity Provider.
 
-**Object-oriented design patterns:**
+- **Object-oriented design patterns:**
 
-Strategy Pattern for tenant management; Builder Pattern for database connection factory (TenantManager).
+  Strategy Pattern for tenant management; Builder Pattern for database connection factory (TenantManager).
 
-**Class layers for data access:**
+- **Class layers for data access:**
 
-API Layer → TenantManager Layer → Service Layer → Repository Layer → Database Proxy.
+  API Layer → TenantManager Layer → Service Layer → Repository Layer → Database Proxy.
 
-**Configuration policies/rules:**
+- **Configuration policies/rules:**
 
 1) **Sensitive Data Protection:**
 
@@ -622,132 +622,233 @@ API Layer → TenantManager Layer → Service Layer → Repository Layer → Dat
 
 2) **Multitenancy Isolation:**
 
-- EchoPay is a multitenant system by design.
-- Every data access passes through a TenantManager layer that enforces tenant context.
-- Services cannot directly access the database without tenant-scoped queries.
-- Database access restricted through a proxy layer; whitelisted services only.
+    - EchoPay is a multitenant system by design.
+    - Every data access passes through a TenantManager layer that enforces tenant context.
+    - Services cannot directly access the database without tenant-scoped queries.
+    - Database access restricted through a proxy layer; whitelisted services only.
 
 3) **Additional Security Measures:**
 
-- Encryption keys managed in Azure Key Vault.
-- JWT authentication with RBAC policies enforced on services.
-- Secrets rotated regularly via DevOps processes.
+    - Encryption keys managed in Azure Key Vault.
+    - JWT authentication with RBAC policies enforced on services.
+    - Secrets rotated regularly via DevOps processes.
 
-**Expected benefits:**
+- **Expected benefits:**
 
-- In case of database breach, encrypted and hashed information remains secure.
-- Strict tenant isolation prevents accidental or malicious data exposure.
-- Scalability across multiple tenants without duplicating databases.
-- Reduced infrastructure and maintenance costs.
-- Improved resilience against human error or coding mistakes.
+    - In case of database breach, encrypted and hashed information remains secure.
+    - Strict tenant isolation prevents accidental or malicious data exposure.
+    - Scalability across multiple tenants without duplicating databases.
+    - Reduced infrastructure and maintenance costs.
+    - Improved resilience against human error or coding mistakes.
 
-**Decision rationale:** 
+- **Decision rationale:** 
 
-Given EchoPay’s multitenant architecture, isolating tenant data is critical for security and compliance.
-By enforcing access through a TenantManager layer and encrypting/hashing sensitive fields, the platform ensures that even in worst-case scenarios (e.g., breach or software bug), exposure is minimal and isolated.
-This design balances security, cost efficiency, and scalability as the system grows.
+  Given EchoPay’s multitenant architecture, isolating tenant data is critical for security and compliance. By enforcing access through a TenantManager layer and encrypting/hashing sensitive fields, the platform ensures that even in worst-case scenarios (e.g., breach or software bug), exposure is minimal and isolated. This design balances security, cost efficiency, and scalability as the system grows.
 
 e) **Recovery and Fault Tolerance**
 
-**Cloud service technology:**
+- **Cloud service technology:**
 
-Azure SQL backup services + geo-replication.
+  Azure SQL backup services + geo-replication.
 
-**Object-oriented design patterns:**
+- **Object-oriented design patterns:**
 
-Retry pattern for transient failures.
+  Retry pattern for transient failures.
 
-**Class layers for data access:**
+- **Class layers for data access:**
 
-Error Handler → Retry Service → Repository Layer.
+  Error Handler → Retry Service → Repository Layer.
 
-**Configuration policies/rules:**
+- **Configuration policies/rules:**
 
-- Automated backups with 30-day retention.
-- Point-in-time recovery enabled.
-- Active geo-replication for disaster recovery.
+    - Automated backups with 30-day retention.
+    - Point-in-time recovery enabled.
+    - Active geo-replication for disaster recovery.
 
-**Expected benefits:**
+- **Expected benefits:**
 
-- Minimal downtime.
-- Fast and granular recovery options.
-- Reduced risk of data loss.
+    - Minimal downtime.
+    - Rapid recovery from failures.
+    - Reduced risk of data loss.
 
-**Decision rationale:**
+- **Decision rationale:**
 
-High availability and disaster recovery are non-optional for a payment system. Azure SQL provides these guarantees without adding manual infrastructure burden.
+  High availability is non-negotiable for a financial app. We chose Azure’s native backup and replication features because they are deeply integrated, easy to manage, and remove the need to build complex, costly custom recovery systems.
 
 **2. Object-Oriented Design – Programming Layer**
 
-a) **Transactions: Statements vs Stored Procedures**
+a) **Transactional Control: Statements vs Stored Procedures**
 
-We chose to manage transactions programmatically through Sequelize rather than stored procedures, keeping logic flexible and easier to maintain.
+- **Cloud service technology:**
 
-- **Cloud service technology: Azure SQL.**
-- **Design patterns: Unit of Work.**
-- **Class layers: API → Service Layer → Repository.**
-- **Policies: Transactions handled via Sequelize; no stored procedures yet.**
-- **Benefits: Safer multi-step operations; rollback support.**
+  Azure SQL.
+
+- **Object-oriented design patterns:**
+
+  Unit of Work.
+
+- **Class layers for data access:**
+
+  Service Layer → Repository Layer.
+
+- **Configuration policies/rules:**
+
+  Sequelize transaction methods (beginTransaction, commit, rollback) used for multi-step operations.
+
+- **Expected benefits:**
+
+    - Centralized logic control in application code.
+    - Easier to maintain and extend as business rules evolve.
+
+- **Decision rationale:**
+
+  Stored procedures are harder to version, test, and debug compared to application-layer logic. By handling transactions inside the service layer, we maintain flexibility and better visibility over business processes.
 
 b) **ORM Usage**
 
-We adopted Sequelize ORM to streamline our database interactions, leveraging its model-based structure to simplify queries and data validation.
+- **Cloud service technology:**
 
-- **Cloud service technology: Sequelize ORM (Node.js).**
-- **Design patterns: Active Record (via Sequelize), Repository.**
-- **Class layers: Models → Repositories.**
-- **Policies: Sequelize models for all entities; migration scripts maintained.**
-- **Benefits: Simplifies database access; strong typing with TypeScript.**
+  Sequelize ORM.
 
-c) **Layers for Mapping, Concurrency, Object Relations**
+- **Object-oriented design patterns:**
 
-Our design separates object models and database interactions into distinct layers to improve maintainability and enable precise control over data transformation and validation.
+  Active Record + Repository.
 
-- **Cloud service technology: Node.js serverless backend.**
-- **Design patterns: DAO, MVC separation.**
-- **Class layers: DTOs, Domain Models, ORM Models.**
-- **Policies: DTO validation; service-to-entity mapping.**
-- **Benefits: Clean separation of concerns; testable logic.**
+- **Class layers for data access:**
 
-d) **Connection Pooling**
+  Sequelize Models → Repository Layer.
 
-Connection pooling is configured in Sequelize to manage concurrency efficiently, especially in a serverless environment where resource limits can fluctuate.
+- **Configuration policies/rules:**
 
-- **Cloud service technology: Sequelize + tedious driver.**
-- **Design patterns: Singleton for DB Manager.**
-- **Class layers: DB Manager → Sequelize.**
-- **Policies: Max pool size configured.**
-- **Benefits: Prevents connection overload; optimizes performance.**
+    - Models mapped using Sequelize syntax.
+    - Migrations handled through Sequelize CLI.
 
-e) **Caching**
+- **Expected benefits:**
 
-Although not yet implemented, caching is planned using Azure Redis to enhance performance in high-read operations like transaction history lookup.
+    - Fast development.
+    - Safer queries.
+    - Strong TypeScript typing.
 
-- **Cloud service technology: Azure Redis (planned).**
-- **Design patterns: Cache-aside.**
-- **Class layers: Cache Layer → Repository.**
-- **Policies: TTL settings; cache invalidation.**
-- **Benefits: Faster reads; reduced DB load.**
+- **Decision rationale:**
 
-f) **Drivers: Native vs Interpreted**
+  Using Sequelize allows us to abstract database operations while enforcing schema definitions. Alternatives like raw SQL or using TypeORM were considered but rejected: Sequelize better matches our Node.js ecosystem, has mature documentation, and offers simpler transaction handling.
 
-We opted for the native tedious driver to ensure compatibility and reliability when interfacing with Azure SQL Server.
+c) **Connection Pooling**
 
-- **Cloud service technology: tedious MSSQL driver (native).**
-- **Design patterns: Not applicable.**
-- **Class layers: Sequelize ORM.**
-- **Policies: Native driver for full MSSQL support.**
-- **Benefits: Stable, well-supported SQL Server connectivity.**
+- **Cloud service technology:**
 
-g) **Data Design**
+  Sequelize connection pooling with tedious driver.
 
-The data model is designed following normalization principles to reduce redundancy and ensure consistency across the database.
+- **Object-oriented design patterns:**
 
-- **Cloud service technology: Azure SQL.**
-- **Design patterns: Domain Modeling.**
-- **Class layers: Sequelize Models.**
-- **Policies: 3NF normalization; enforced relationships.**
-- **Benefits: Prevents redundancy; maintains data consistency.**
+  Singleton Connection Manager.
+
+- **Class layers for data access:**
+
+  Connection Manager → ORM → Database.
+
+- **Configuration policies/rules:**
+
+    - Initial Pool: 5 connections.
+    - Max Pool: 30 connections.
+    - Dynamic scaling based on serverless concurrency.
+
+- **Expected benefits:**
+
+    - Prevents database overload.
+    - Improves response time in serverless environments.
+
+- **Decision rationale:**
+
+  Serverless functions spawn multiple instances; without connection pooling, we'd quickly hit database connection limits. Pooling maintains stability without overloading the DB.
+
+d) **Caching**
+
+- **Cloud service technology:**
+
+  Azure Redis Cache (planned).
+
+- **Object-oriented design patterns:**
+
+  Cache-Aside Pattern.
+
+- **Class layers for data access:**
+
+  Service Layer → Cache Layer → Repository Layer.
+
+- **Configuration policies/rules:**
+
+    - Key pattern: {entity}:{id} (e.g., user:12345).
+    - TTL set to 5 minutes.
+
+- **Expected benefits:**
+
+    - Faster read operations.
+    - Lighter load on Azure SQL.
+
+- **Decision rationale:**
+
+  Read-heavy endpoints like transaction history will benefit from caching. Redis offers sub-millisecond responses and simple integration with Node.js. Alternatives like in-memory cache (e.g., LRU cache) were rejected because they don't persist across serverless invocations.
+
+e) **Drivers: Native vs Interpreted**
+
+- **Cloud service technology:**
+
+  `tedious` native driver for MSSQL.
+
+- **Object-oriented design patterns:**
+
+  Not applicable.
+
+- **Class layers for data access:**
+
+  Sequelize ORM → Database.
+
+- **Configuration policies/rules:**
+
+  Using native `tedious` driver for Sequelize compatibility.
+
+- **Expected benefits:**
+
+  - Faster, more stable connections.
+  - Full feature support with Azure SQL.
+
+- **Decision rationale:**
+
+  Native drivers reduce latency and ensure compatibility with all Azure SQL features. Interpreted drivers (like ODBC bridges) were rejected because they add extra layers and increase connection times.
+
+f) **Data Design**
+
+- **Cloud service technology:**
+
+  Azure SQL.
+
+- **Object-oriented design patterns:**
+
+  Domain-Driven Design (DDD).
+
+- **Class layers for data access:**
+
+  DTOs → Domain Models → ORM Models.
+
+- **Configuration policies/rules:**
+
+    - Third Normal Form (3NF) enforced.
+    - Example table structure:
+
+    ```plaintext
+    Table: Users
+    Fields: id (PK), email (encrypted), passwordHash, createdAt
+    ```
+
+- **Expected benefits:**
+
+    - Clear, scalable data structure.
+    - Easy maintenance and future-proofing.
+
+- **Decision rationale:**
+
+  Using a normalized relational model supports strong integrity and auditing capabilities, critical for payment systems. Denormalization was rejected because the system’s operational needs prioritize consistency over performance micro-optimizations.
 
 ## Architecture Design
 
