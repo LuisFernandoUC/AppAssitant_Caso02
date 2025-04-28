@@ -919,16 +919,16 @@ The following diagram illustrates the high-level and detailed architecture of th
 
 The architecture shows:
 
-- All system layers (Presentation, Business Logic, Data, Security, External Communication, Cloud Services).
-- Key object patterns and involved classes per layer (Observer, Abstract Factory).
-- System behavior under external stimuli (user interactions, payment scheduling, transaction failures).
-- Required cloud services (Azure Functions, Azure Database) and third-party libraries (Auth0, Tailwind, React).
-- Architectural patterns employed (N-Layered Architecture, Observer Pattern).
-- Consistent color coding for different zones and services.
-- Clear communication flows, protocols (HTTPs, SQL), and cloud zones (Azure-hosted backend and database).
-
-Each connection and component is strategically placed to ensure scalability, security, and maintainability.
-
+- All designed layers: Frontend Layer (Next.js/TypeScript with React, Tailwind CSS, Auth0 SDK), API Gateway Layer (AWS API Gateway), Backend Layer (Node.js/Express in AWS) subdivided into API/Controllers (Middleware, Chain of Responsibility, Controller patterns), DAL/Repositories (Repository pattern), BLL/Services (Facade pattern), and External Clients/Adapters (Adapter pattern), Data Layer (Azure SQL/MSSQL), and External Services Layer (Azure Cognitive Services, Auth0). All components are contained within a Cloud Services Layer.
+- Object patterns and involved classes: Each backend sublayer demonstrates design patterns and example classes/modules (e.g., abstractHandler, authMiddleware, PaymentRepository, paymentService, voiceCommandService, PaymentGatewayAdapter, AzureSpeechAdapter).
+- System behavior under external stimuli: The diagram mainly captures the static structure and request propagation from user interactions (browser) through all layers, although dynamic sequences for errors or asynchronous events are not explicitly shown.
+- Required cloud services and libraries: AWS API Gateway, Azure SQL Database, Azure Cognitive Services (Text-To-Speech, Computer Vision), Auth0 Identity Management, along with critical libraries like React, Next.js, Node.js, Express.js, AWS SDK, Azure SDK, and Auth0 SDK.
+- Architectural patterns used: N-Layered Architecture at the system level, combined with Middleware, Chain of Responsibility, Controller, Repository, Facade, and Adapter patterns within backend layers.
+- Consistent color and symbol coding: Each layer is color-coded for clarity (Frontend - blue, Gateway - pink, Backend - red, Data Layer - purple, External Services - green, Cloud Container - light blue) with uniform boxes and arrows to indicate structure and flow.
+- Top-down structure: Requests flow vertically from the Web Browser through Frontend, API Gateway, and Backend Layers, while Data and External Services are connected laterally to the backend.
+- Communication protocols and cloud zones: Key protocols are noted (HTTPS between Browser and Frontend, RESTful API Calls between Frontend and Gateway). The system demonstrates a multi-cloud deployment: backend services on AWS, database services on Azure.
+- Key architecture attributes: Scalability, security, and maintainability are implied through the use of API Gateways, modular backend services, adapters, and cloud resource separation, although not explicitly annotated in the diagram.
+- Clear communication of analysis results: The structure, color coding, and labeling present the architecture clearly and effectively, communicating the major design choices and system organization.
 
 ## Architecture Compliance Matrix
 
