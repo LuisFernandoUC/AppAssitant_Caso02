@@ -903,7 +903,7 @@ These relationships help maintain a clear and organized data structure while sup
 
 ##### 4. Entity-Relationship Diagram
 
-    Diagram
+![Texto alternativo](./assets/ModeloGeneral.JPG)
 
 
 > **Note:**  
