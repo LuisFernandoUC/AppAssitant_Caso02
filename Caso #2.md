@@ -913,6 +913,23 @@ This design focuses on the core tables critical to EchoPay’s operation. Additi
 
 ## Architecture Design
 
+The following diagram illustrates the high-level and detailed architecture of the EchoPay system solution:
+
+![Texto alternativo](./assets/Architecture_Design.PNG)
+
+The architecture shows:
+
+- All system layers (Presentation, Business Logic, Data, Security, External Communication, Cloud Services).
+- Key object patterns and involved classes per layer (Observer, Abstract Factory).
+- System behavior under external stimuli (user interactions, payment scheduling, transaction failures).
+- Required cloud services (Azure Functions, Azure Database) and third-party libraries (Auth0, Tailwind, React).
+- Architectural patterns employed (N-Layered Architecture, Observer Pattern).
+- Consistent color coding for different zones and services.
+- Clear communication flows, protocols (HTTPs, SQL), and cloud zones (Azure-hosted backend and database).
+
+Each connection and component is strategically placed to ensure scalability, security, and maintainability.
+
+
 ## Architecture Compliance Matrix
 
 The following matrix illustrates how the selected architectural decisions fulfill the main functional and non-functional requirements of the system:
