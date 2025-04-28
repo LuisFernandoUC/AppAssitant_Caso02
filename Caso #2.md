@@ -915,7 +915,7 @@ This design focuses on the core tables critical to EchoPay’s operation. Additi
 
 The following diagram illustrates the high-level and detailed architecture of the EchoPay system solution:
 
-![Texto alternativo](./assets/Architecture_Design.PNG)
+![Texto alternativo](./assets/ArchitectureDesign.png)
 
 The architecture shows:
 
