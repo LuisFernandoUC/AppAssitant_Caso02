@@ -384,6 +384,73 @@ These services are invoked through client-side logic and are chosen based on the
 
 ![Texto alternativo](./assets/Final_FE_Architecture_Diagram.jpg)
 
+### 1. React Frontend Overview
+
+This project follows a layered architecture to promote maintainability, scalability, and clear separation of concerns.
+
+The structure is organized into:
+
+- **Visual Components Layer (View)**
+- **ViewModel Layer**
+- **Model Layer**
+- **External Services Integration**
+
+Everything is hosted on Vercel for seamless deployment.
+
+### 2. Layer Descriptions
+
+#### Visual Components (View)
+
+- Built with **React + Tailwind CSS** following **Atomic Design** principles.
+- Divided into:
+  - atoms/
+  - molecules/
+  - organisms/
+  - templates/
+  - pages/
+- Handles only **UI rendering** and **user interaction**.
+- Activated by state changes coming from the ViewModel layer.
+
+#### ViewModel Layer
+
+- Manages **state**, **business logic**, and **application flow**.
+- Key classes:
+  - **AuthStore (Observable):** Centralized user authentication state.
+  - **MiddlewareHandler (Strategy):** Handles middleware executions (Auth, Logging).
+  - **UploadManager (Singleton):** Manages file uploads and retries.
+  - **ApiHandler (Concrete):** Sends API requests.
+  - **EventController (Dispatcher):** Dispatches upload events.
+  - **Notification (Abstract):** Defines how notifications are handled.
+- Implements **patterns** like **Observer**, **Command**, **Strategy**, and **Singleton**.
+
+
+#### Model Layer
+
+- Defines **data models** and **API connection logic**.
+- Key components:
+  - **DTOs:** `Payment.ts`, `User.ts`, `NotificationDTO.ts`
+  - **API Connector:** 
+    - `ApiConnector.ts` (Axios setup)
+    - `endpoints.ts` (Service URLs)
+- Optionally supports **adapters** if external data transformations are needed.
+
+
+#### External Services
+
+- Integrations from the frontend directly to APIs:
+  - **Azure Cognitive Services** (Voice recognition)
+  - **Azure Text-to-Speech** (Accessibility)
+  - **Azure Computer Vision** (Receipt scanning)
+  - **Payments External APIs** (Utility providers)
+  - **Auth0** (Authentication service)
+
+
+### 3. Deployment
+
+- Entire frontend is **deployed on Vercel**.
+- Vercel provides **scalability**, **automatic HTTPS**, and **fast global distribution**.
+
+
 ## **Backend Design Specifications**
 
 ### Proof of Concepts
