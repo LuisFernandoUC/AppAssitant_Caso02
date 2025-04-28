@@ -795,36 +795,121 @@ e) **Drivers: Native vs Interpreted**
 
 f) **Data Design**
 
-- **Cloud service technology:**
+This section presents the core data design principles for EchoPay. It focuses on the key parts of the system's data structure that developers must be familiar with, ensuring consistency, scalability, and strong security practices across the platform.
 
-  Azure SQL.
+##### 1. General Data Modeling Conventions
 
-- **Object-oriented design patterns:**
+- All tables will use **UUIDs** as their primary keys to ensure global uniqueness.
+- **Third Normal Form (3NF)** will be enforced to maintain data integrity and avoid redundancy.
+- Every table will include standard audit fields: `created_at`, `updated_at`, and optionally `deleted_at` for soft deletion.
+- Sensitive information like **user emails** and **bank account numbers** will be **encrypted**.
+- **Passwords** will always be **hashed** using industry best practices.
+- **Foreign keys** will be used to enforce relationships between tables.
 
-  Domain-Driven Design (DDD).
+These conventions are designed to support a secure, efficient, and maintainable system as EchoPay grows.
 
-- **Class layers for data access:**
 
-  DTOs → Domain Models → ORM Models.
+##### 2. Key Table Designs
 
-- **Configuration policies/rules:**
+`Users`
+Stores basic user information and authentication data.
 
-    - Third Normal Form (3NF) enforced.
-    - Example table structure:
+| Field          | Type           | Notes                      |
+|----------------|----------------|-----------------------------|
+| id             | UUID            | Primary Key                |
+| email          | VARCHAR(255)    | Encrypted, Unique           |
+| password_hash  | VARCHAR(255)    | Hashed                     |
+| created_at     | DATETIME        | Creation timestamp         |
+| updated_at     | DATETIME        | Update timestamp           |
+| deleted_at     | DATETIME        | Soft deletion timestamp (optional) |
 
-    ```plaintext
-    Table: Users
-    Fields: id (PK), email (encrypted), passwordHash, createdAt
-    ```
 
-- **Expected benefits:**
+`BankAccounts`
+Represents users' linked bank accounts for processing payments.
 
-    - Clear, scalable data structure.
-    - Easy maintenance and future-proofing.
+| Field           | Type           | Notes                      |
+|-----------------|----------------|-----------------------------|
+| id              | UUID            | Primary Key                |
+| user_id         | UUID            | Foreign Key → Users(id)    |
+| bank_name       | VARCHAR(255)    | Bank name                  |
+| account_number  | VARCHAR(255)    | Encrypted                  |
+| account_type    | VARCHAR(50)     | (e.g., Checking, Savings)  |
+| created_at      | DATETIME        | Creation timestamp         |
 
-- **Decision rationale:**
 
-  Using a normalized relational model supports strong integrity and auditing capabilities, critical for payment systems. Denormalization was rejected because the system’s operational needs prioritize consistency over performance micro-optimizations.
+`Services`
+Defines the services that users can pay for, such as utilities or municipal services.
+
+| Field           | Type           | Notes                      |
+|-----------------|----------------|-----------------------------|
+| id              | UUID            | Primary Key                |
+| name            | VARCHAR(255)    | Service name (e.g., Electricity) |
+| provider_name   | VARCHAR(255)    | Name of service provider (e.g., CNFL) |
+| service_type    | VARCHAR(100)    | Type (Utility, Municipality, etc.) |
+| created_at      | DATETIME        | Creation timestamp         |
+
+
+`Payments`
+Captures the details of scheduled and completed payments.
+
+| Field            | Type           | Notes                      |
+|------------------|----------------|-----------------------------|
+| id               | UUID            | Primary Key                |
+| user_id          | UUID            | Foreign Key → Users(id)    |
+| service_id       | UUID            | Foreign Key → Services(id) |
+| bank_account_id  | UUID            | Foreign Key → BankAccounts(id) |
+| amount           | DECIMAL(10,2)   | Payment amount             |
+| status           | VARCHAR(50)     | (Pending, Completed, Failed) |
+| scheduled_date   | DATE            | Scheduled payment date     |
+| paid_at          | DATETIME        | Actual payment date        |
+| created_at       | DATETIME        | Creation timestamp         |
+
+
+`PaymentLogs`
+Logs important events related to each payment (e.g., payment executed, failed, retried).
+
+| Field          | Type           | Notes                      |
+|----------------|----------------|-----------------------------|
+| id             | UUID            | Primary Key                |
+| payment_id     | UUID            | Foreign Key → Payments(id) |
+| action         | VARCHAR(255)    | Action performed           |
+| details        | TEXT            | Optional details (JSON string) |
+| created_at     | DATETIME        | Creation timestamp         |
+
+
+`Notifications`
+Represents user notifications for various events (e.g., payment confirmations, failures).
+
+| Field          | Type           | Notes                      |
+|----------------|----------------|-----------------------------|
+| id             | UUID            | Primary Key                |
+| user_id        | UUID            | Foreign Key → Users(id)    |
+| type           | VARCHAR(100)    | Notification type (Push, SMS, Voice) |
+| message        | TEXT            | Notification message       |
+| sent_at        | DATETIME        | Timestamp when sent        |
+| status         | VARCHAR(50)     | (Sent, Failed)              |
+
+
+##### 3. Key Relationships
+
+- A **User** can have multiple **BankAccounts**.
+- A **User** can schedule multiple **Payments**.
+- A **Payment** is linked to one **User**, one **Service**, and one **BankAccount**.
+- A **Payment** can have multiple **PaymentLogs** to track its status changes over time.
+- A **User** can receive multiple **Notifications**.
+
+These relationships help maintain a clear and organized data structure while supporting the business rules of EchoPay.
+
+
+##### 4. Entity-Relationship Diagram
+
+    Diagram
+
+
+> **Note:**  
+This design focuses on the core tables critical to EchoPay’s operation. Additional tables and refinements may be introduced later during detailed database modeling or as new features are added.
+
+
 
 ## Architecture Design
 
